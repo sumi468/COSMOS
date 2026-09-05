@@ -1,0 +1,159 @@
+import { fetchFeed } from "@/lib/rss";
+import { categorize } from "@/lib/categorize";
+import { encodeId } from "@/lib/id";
+import { getLastGood, setLastGood } from "@/lib/cache";
+import { fetchCache } from "@/lib/fetchPolicy";
+import { fetchArticleEnrichment } from "@/lib/articleEnrich";
+import { capSummary, looksUnusable } from "@/lib/text";
+import type { FetchResult, NewsItem } from "@/types/cosmos";
+
+// JAXA's official English press release RSS (RDF/RSS 1.0), linked directly
+// from JAXA's own "For Media" page (https://global.jaxa.jp/media.html →
+// "You can find official JAXA press releases here and also RSS them.").
+// This is the only JAXA feed COSMOS uses — no scraping of listing pages.
+const JAXA_FEEDS: Array<{ name: string; url: string }> = [
+  { name: "JAXA Press Release (English)", url: "https://global.jaxa.jp/rss/press.rdf" }
+];
+
+const REVALIDATE_SECONDS = 900; // JAXA publishes less frequently than NASA
+const CACHE_KEY = "jaxa-news";
+// Article pages don't change after publishing, so this can be cached hard.
+const ENRICHMENT_REVALIDATE_SECONDS = 6 * 60 * 60;
+// Cap how many article pages we fetch live per run, so a full cache miss
+// (e.g. right after deploy, or in dev with caching disabled) can't fire off
+// 20 simultaneous requests at JAXA's server. Once cached, subsequent runs
+// hit Next's fetch cache instead of the network, so this only limits the
+// "cold" burst, not steady-state freshness.
+const MAX_ENRICHMENT_PER_RUN = 8;
+
+// JAXA-only request headers. A self-identifying "COSMOS/1.0" User-Agent
+// (the previous default, still used as-is by NASA's fetches in lib/rss.ts —
+// unchanged) is a common trigger for stricter government/agency WAFs to
+// silently block or reject a request. This overrides the header for JAXA's
+// fetch only, via fetchFeed's existing options param — lib/rss.ts itself is
+// untouched, so NASA's fetch behavior is unaffected.
+const JAXA_FEED_HEADERS: Record<string, string> = {
+  "User-Agent":
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
+  Accept: "application/rss+xml, application/xml, text/xml, */*",
+  "Accept-Language": "en-US,en;q=0.9,ja;q=0.8"
+};
+
+/**
+ * JAXA's own RSS `description` is frequently one of:
+ *   1. A genuinely complete short blurb — fine, use as-is.
+ *   2. Cut off mid-sentence/mid-word by JAXA's own feed generator — unusable
+ *      as-is (would look broken), so we try to complete it from the article.
+ *   3. A JS `location.href=...` redirect stub for "(Japanese Only)" releases
+ *      that don't have an English page at all — always needs enrichment.
+ * Either way we NEVER fabricate text: when enrichment also fails, we fall
+ * back to the original (possibly short) description rather than inventing
+ * anything, and openly show only what's real.
+ */
+async function buildJaxaArticle(
+  description: string,
+  officialUrl: string
+): Promise<{ summary: string; imageUrl?: string }> {
+  const verdict = looksUnusable(description);
+  if (verdict === "ok") {
+    return { summary: capSummary(description, 900) };
+  }
+
+  const enrichment = await fetchArticleEnrichment(officialUrl, ENRICHMENT_REVALIDATE_SECONDS);
+  const imageUrl = enrichment?.imageUrl;
+
+  if (enrichment?.paragraphs && looksUnusable(enrichment.paragraphs) === "ok") {
+    return { summary: capSummary(enrichment.paragraphs, 900), imageUrl };
+  }
+
+  if (verdict === "cut-off") {
+    // The RSS description is real, official text — just incomplete. Safe to
+    // show as-is (it simply won't finish the last sentence); never a raw
+    // JS/redirect stub, since that case is handled separately below.
+    return { summary: description, imageUrl };
+  }
+
+  if (verdict === "redirect") {
+    // NEVER show the raw `setTimeout(...); location.href=...` stub text,
+    // regardless of whether we found an image — that was the bug here.
+    return {
+      summary:
+        "This is a Japanese-language press release with no separate English-language article. See the official source for details.",
+      imageUrl
+    };
+  }
+
+  // too-short / empty
+  return {
+    summary: description?.trim() || "No summary available. See the official source for details.",
+    imageUrl
+  };
+}
+
+export async function getJaxaNews(): Promise<FetchResult<NewsItem>> {
+  const errors: string[] = [];
+  const collected: NewsItem[] = [];
+  const seen = new Set<string>();
+  const debug: Record<string, string> = {};
+
+  await Promise.all(
+    JAXA_FEEDS.map(async (feed) => {
+      try {
+        const entries = await fetchFeed(feed.url, { ...fetchCache(REVALIDATE_SECONDS), headers: JAXA_FEED_HEADERS });
+        debug[feed.name] = `HTTP 200, ${entries.length} raw entries`;
+        let feedCount = 0;
+
+        const built = await Promise.all(
+          entries
+            .filter((entry) => entry.link && entry.title && !seen.has(entry.link))
+            .map(async (entry, index) => {
+              seen.add(entry.link);
+              const { summary, imageUrl } =
+                index < MAX_ENRICHMENT_PER_RUN
+                  ? await buildJaxaArticle(entry.description, entry.link)
+                  : { summary: capSummary(entry.description, 900), imageUrl: undefined };
+              return { entry, summary, imageUrl };
+            })
+        );
+
+        for (const { entry, summary, imageUrl } of built) {
+          feedCount++;
+          collected.push({
+            id: encodeId(entry.link),
+            source: "JAXA",
+            title: entry.title,
+            summary,
+            publishedAt: entry.publishedAt,
+            officialUrl: entry.link,
+            category: categorize(entry.title, entry.description),
+            imageUrl,
+            feedName: feed.name
+          });
+        }
+        debug[feed.name] = `ok (${feedCount} articles)`;
+      } catch (err) {
+        const message = err instanceof Error ? err.message : String(err);
+        debug[feed.name] = `failed: ${message}`;
+        errors.push(`JAXAの最新情報を取得できませんでした（${feed.name}）: ${message}`);
+      }
+    })
+  );
+
+  if (process.env.NODE_ENV !== "production") {
+    // eslint-disable-next-line no-console
+    console.log("[COSMOS] JAXA feed status:", debug, `total articles: ${collected.length}`);
+  }
+
+  collected.sort((a, b) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime());
+
+  if (collected.length > 0) {
+    setLastGood(CACHE_KEY, collected);
+    return { items: collected, updatedAt: new Date().toISOString(), stale: false, errors };
+  }
+
+  const fallback = getLastGood<NewsItem[]>(CACHE_KEY);
+  if (fallback) {
+    return { items: fallback.value, updatedAt: fallback.updatedAt, stale: true, errors };
+  }
+  return { items: [], updatedAt: new Date().toISOString(), stale: false, errors };
+}

@@ -1,0 +1,73 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: dark;
+}
+
+html,
+body {
+  background-color: #05070b;
+  color: #f4f7fa;
+}
+
+body {
+  font-family: var(--font-body), system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+::selection {
+  background: rgba(73, 212, 232, 0.28);
+  color: #fff;
+}
+
+/* Hairline dividers used throughout instead of boxed cards everywhere */
+.hairline {
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
+/* Respect reduced-motion preferences per the frontend design skill */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+}
+
+.eyebrow {
+  font-family: var(--font-mono), ui-monospace, monospace;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  font-size: 0.6875rem;
+}
+
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.line-clamp-3 {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* focus ring visible on keyboard nav, invisible on mouse */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible {
+  outline: 2px solid #49d4e8;
+  outline-offset: 2px;
+  border-radius: 4px;
+}
