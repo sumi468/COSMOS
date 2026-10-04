@@ -19,8 +19,9 @@ export default function SettingsPage() {
       <SectionHeading eyebrow="Settings" title="About COSMOS" />
       <p className="text-sm text-cosmos-white/90 max-w-lg leading-relaxed">
         COSMOS aggregates real-time public information directly from NASA and JAXA&rsquo;s own official
-        feeds and APIs. Nothing is written or invented by AI &mdash; titles, summaries, dates, and links
-        always come from the original source, and every article links back to it.
+        feeds and APIs. Titles, source excerpts, dates, and links come from the original source.
+        On article pages, you can generate an English AI brief from the available source text.
+        AI briefs are labeled separately and may contain mistakes; every article links to its official source.
       </p>
 
       <div className="mt-8 max-w-lg">

@@ -53,17 +53,17 @@ const JAXA_FEED_HEADERS: Record<string, string> = {
 async function buildJaxaArticle(
   description: string,
   officialUrl: string
-): Promise<{ summary: string; imageUrl?: string }> {
+): Promise<{ summary: string; sourceText?: string; imageUrl?: string }> {
   const verdict = looksUnusable(description);
   if (verdict === "ok") {
-    return { summary: capSummary(description, 900) };
+    return { summary: capSummary(description, 900), sourceText: description };
   }
 
   const enrichment = await fetchArticleEnrichment(officialUrl, ENRICHMENT_REVALIDATE_SECONDS);
   const imageUrl = enrichment?.imageUrl;
 
   if (enrichment?.paragraphs && looksUnusable(enrichment.paragraphs) === "ok") {
-    return { summary: capSummary(enrichment.paragraphs, 900), imageUrl };
+    return { summary: capSummary(enrichment.paragraphs, 900), sourceText: enrichment.paragraphs, imageUrl };
   }
 
   if (verdict === "cut-off") {
@@ -108,21 +108,22 @@ export async function getJaxaNews(): Promise<FetchResult<NewsItem>> {
             .filter((entry) => entry.link && entry.title && !seen.has(entry.link))
             .map(async (entry, index) => {
               seen.add(entry.link);
-              const { summary, imageUrl } =
+              const { summary, sourceText, imageUrl } =
                 index < MAX_ENRICHMENT_PER_RUN
                   ? await buildJaxaArticle(entry.description, entry.link)
-                  : { summary: capSummary(entry.description, 900), imageUrl: undefined };
-              return { entry, summary, imageUrl };
+                  : { summary: looksUnusable(entry.description) === "redirect" ? "No summary available. See the official source for details." : capSummary(entry.description, 900), sourceText: looksUnusable(entry.description) === "redirect" ? undefined : entry.description, imageUrl: undefined };
+              return { entry, summary, sourceText, imageUrl };
             })
         );
 
-        for (const { entry, summary, imageUrl } of built) {
+        for (const { entry, summary, sourceText, imageUrl } of built) {
           feedCount++;
           collected.push({
             id: encodeId(entry.link),
             source: "JAXA",
             title: entry.title,
             summary,
+            sourceText,
             publishedAt: entry.publishedAt,
             officialUrl: entry.link,
             category: categorize(entry.title, entry.description),

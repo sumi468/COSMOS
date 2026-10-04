@@ -5,6 +5,7 @@ import NewsCard from "@/components/NewsCard";
 import EventCard from "@/components/EventCard";
 import MissionCard from "@/components/MissionCard";
 import UpdatedBadge from "@/components/UpdatedBadge";
+import SpaceHero from "@/components/SpaceHero";
 import { SourceErrorNotice, EmptyState } from "@/components/EmptyState";
 import { getAllNews } from "@/lib/news";
 import { getUpcomingEvents, LAUNCH_LIBRARY_ATTRIBUTION } from "@/lib/launches";
@@ -22,14 +23,11 @@ export default async function HomePage() {
 
   return (
     <PageShell>
-      <header className="mb-10">
-        <p className="eyebrow text-cosmos-cyan">Live / Latest</p>
-        <h1 className="mt-2 font-display text-4xl md:text-5xl leading-[1.05] text-white">COSMOS</h1>
-        <p className="mt-2 text-cosmos-muted max-w-md">Explore what&rsquo;s happening beyond Earth.</p>
-        <div className="mt-4">
-          <UpdatedBadge updatedAt={news.updatedAt} stale={news.stale} />
-        </div>
-      </header>
+      <SpaceHero />
+      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-cosmos-line pb-5">
+        <p className="eyebrow text-cosmos-muted">Dispatches from NASA &amp; JAXA</p>
+        <UpdatedBadge updatedAt={news.updatedAt} stale={news.stale} />
+      </div>
 
       <SourceErrorNotice errors={news.errors} />
 
