@@ -21,7 +21,7 @@ export async function POST(request: Request) {
     let body;
     try { body = JSON.parse(raw); } catch { return reply({ error: "Invalid request." }, 400); }
     if (typeof body?.id !== "string" || !/^[A-Za-z0-9_-]{1,1500}$/.test(body.id)) return reply({ error: "Invalid article ID." }, 400);
-    if (!process.env.OPENAI_API_KEY?.trim()) return reply({ error: "AI summaries are not available yet. You can still read the source excerpt below." }, 503);
+    if (!process.env.GEMINI_API_KEY?.trim()) return reply({ error: "AI summaries are not available yet. You can still read the source excerpt below." }, 503);
     const news = await getAllNews();
     const article = news.items.find((item) => item.id === body.id);
     if (!article) return reply({ error: "This article is no longer in the current feed. Please read the official source." }, 404);

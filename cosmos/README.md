@@ -16,18 +16,20 @@ On PowerShell, use `Copy-Item .env.example .env.local` for the copy step.
 
 ## English AI summaries
 
-Open a news article and choose **Generate summary**. COSMOS sends the available official source text to OpenAI and returns a concise English brief. The original excerpt and official article link remain available, including when generation fails. Briefs are labeled as AI-generated; confirm details against the source.
+Open a news article and choose **Generate summary**. COSMOS sends the available official source text to Google Gemini and returns a concise English brief. The original excerpt and official article link remain available, including when generation fails. Briefs are labeled as AI-generated; confirm details against the source.
 
 Set these server-side environment variables locally or in your hosting project's environment settings, then restart/redeploy:
 
 ```dotenv
-OPENAI_API_KEY=your-server-side-key
-OPENAI_SUMMARY_MODEL=gpt-4.1-mini
+GEMINI_API_KEY=your-server-side-key
+GEMINI_SUMMARY_MODEL=gemini-3.5-flash-lite
 ```
 
-Never put the key in a `NEXT_PUBLIC_*` variable or commit `.env.local`. Without a key, the app still works and the summary button reports that AI summaries are unavailable. API usage is billed to the configured OpenAI project.
+Create a key in [Google AI Studio](https://aistudio.google.com/apikey) using a **Free Tier project without Cloud Billing enabled**. Gemini 3.5 Flash-Lite offers free text input/output within its quota. Do not upgrade to a paid tier if you want to avoid charges. The app cannot detect your Google billing tier: a key from a paid project may incur charges. No OpenAI requests or paid-provider fallbacks remain. When the free quota is exhausted, generation stops with a retry message; the source excerpt stays available. Quotas and availability depend on Google's current terms and your account. Free-tier data can be used to improve Google's products; COSMOS sends only the public article title and text.
 
-The implementation uses the [OpenAI Responses API](https://developers.openai.com/api/docs/guides/text). It generates only on a button click, validates the article against current feeds, uses English-only summarization instructions, and rejects empty, refused, or incomplete output. Requests time out after 25 seconds. Successful generations are cached for 24 hours by article content and model, with a maximum of 300 entries. Concurrent requests for the same content share a generation. Each server process allows at most 20 new generations per minute and four concurrent generations.
+Never put the key in a `NEXT_PUBLIC_*` variable or commit `.env.local`. Without a key, the app still works and the summary button reports that AI summaries are unavailable.
+
+The implementation uses the [Gemini Interactions API](https://ai.google.dev/api/interactions-api). It generates only on a button click, validates the article against current feeds, uses English-only summarization instructions, and rejects empty, refused, or incomplete output. Requests time out after 25 seconds. Successful generations are cached for 24 hours by article content and model, with a maximum of 300 entries. Concurrent requests for the same content share a generation. Each server process allows at most 20 new generations per minute and four concurrent generations. See [Google's pricing](https://ai.google.dev/gemini-api/docs/pricing) for the current free-tier terms.
 
 These caches and limits are process-local; they reset on restarts and are not shared across serverless instances. For a high-traffic public deployment, add shared storage and a deployment-level rate limit. Source input is bounded to 18,000 characters. NASA provides article body text through RSS; JAXA may supply a shorter excerpt or enriched lead paragraphs, so a brief may not cover the full article. Articles no longer present in current feeds cannot be summarized.
 
@@ -60,6 +62,6 @@ Tests mock the AI provider: English instructions, source input, output parsing, 
 
 ## Deploy
 
-Import the GitHub repository into your Next.js-compatible host with **Root Directory: `cosmos`**. Configure `OPENAI_API_KEY` and optional source keys in the host environment. Build with `npm run build` and start with `npm start` when self-hosting. Never expose server credentials in client bundles.
+Import the GitHub repository into your Next.js-compatible host with **Root Directory: `cosmos`**. Configure `GEMINI_API_KEY` and optional source keys in the host environment. Build with `npm run build` and start with `npm start` when self-hosting. Never expose server credentials in client bundles.
 
 COSMOS is independent and is not affiliated with NASA or JAXA. News and imagery link to their sources. Launch data is provided by The Space Devs; third-party content remains subject to its source's usage policy.
