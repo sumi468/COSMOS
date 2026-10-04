@@ -12,7 +12,7 @@ export default function MissionCard({ mission }: { mission: Mission }) {
   return (
     <Link
       href={`/missions/${mission.slug}`}
-      className="group flex flex-col justify-between gap-4 rounded-2xl border border-cosmos-line p-5 hover:border-cosmos-ice/30 transition-colors"
+      className="mission-card group flex flex-col justify-between gap-4 rounded-2xl border border-cosmos-line p-5 hover:border-cosmos-ice/30 transition-colors"
     >
       <div>
         <div className="flex items-center justify-between gap-2">

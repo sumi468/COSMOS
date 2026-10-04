@@ -47,7 +47,8 @@ export async function fetchFeed(
         "Mozilla/5.0 (compatible; COSMOS/1.0; +https://cosmos.app) space-news-aggregator",
       Accept: "application/rss+xml, application/rdf+xml, application/atom+xml, application/xml, text/xml, */*"
     },
-    ...fetchInit
+    ...fetchInit,
+    signal: fetchInit.signal ?? AbortSignal.timeout(10_000)
   });
   if (!res.ok) {
     throw new Error(`HTTP ${res.status} ${res.statusText} for ${url}`);

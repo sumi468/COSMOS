@@ -62,6 +62,7 @@ export async function getNasaNews(): Promise<FetchResult<NewsItem>> {
             source: "NASA",
             title: entry.title,
             summary: buildSummary(entry.description, entry.contentHtml),
+            sourceText: extractLeadParagraphs(entry.contentHtml, 30) || entry.description,
             publishedAt: entry.publishedAt,
             officialUrl: entry.link,
             category: categorize(entry.title, entry.description),

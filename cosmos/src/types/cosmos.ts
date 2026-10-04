@@ -21,6 +21,7 @@ export interface NewsItem {
   source: Agency;
   title: string;
   summary: string;
+  sourceText?: string; // Longer official text for AI input; not the generated summary.
   publishedAt: string; // ISO 8601, from the feed — never guessed
   officialUrl: string;
   category: NewsCategory;

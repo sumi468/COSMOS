@@ -3,6 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import PageShell from "@/components/PageShell";
 import ArticlePlaceholder from "@/components/ArticlePlaceholder";
+import AiSummary from "@/components/AiSummary";
 import { formatLocalDateTime, relativeTime } from "@/lib/format";
 import { getAllNews } from "@/lib/news";
 
@@ -36,8 +37,9 @@ export default async function NewsDetailPage({ params }: { params: { id: string 
           )}
         </div>
 
+        <AiSummary key={item.id} id={item.id} />
         <div className="mt-6 border-t border-cosmos-line pt-6">
-          <p className="eyebrow text-cosmos-muted mb-2">Summary</p>
+          <p className="eyebrow text-cosmos-muted mb-2">Source excerpt</p>
           {item.summary?.trim() ? (
             <p className="text-[15px] leading-relaxed text-cosmos-white/90 whitespace-pre-line">{item.summary}</p>
           ) : (

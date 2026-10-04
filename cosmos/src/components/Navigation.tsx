@@ -23,10 +23,10 @@ export default function Navigation() {
   return (
     <>
       {/* Desktop sidebar */}
-      <aside className="hidden md:flex md:flex-col md:w-60 md:shrink-0 md:border-r md:border-cosmos-line md:min-h-screen md:sticky md:top-0 md:py-8 md:px-5">
+      <aside className="space-sidebar hidden md:flex md:flex-col md:w-56 md:shrink-0 md:border-r md:border-cosmos-line md:h-screen md:sticky md:top-0 md:py-8 md:px-5">
         <Link href="/" className="flex items-center gap-2 px-2 mb-10">
-          <span className="h-2 w-2 rounded-full bg-cosmos-cyan" aria-hidden />
-          <span className="font-display text-lg tracking-tight">COSMOS</span>
+          <span className="cosmos-mark" aria-hidden="true">✦</span>
+          <span className="font-display text-lg tracking-[0.18em]">COSMOS</span>
         </Link>
         <nav className="flex flex-col gap-1">
           {ITEMS.map(({ href, label, icon: Icon }) => {
@@ -35,9 +35,10 @@ export default function Navigation() {
               <Link
                 key={href}
                 href={href}
+                aria-current={active ? "page" : undefined}
                 className={`flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm transition-colors ${
                   active
-                    ? "bg-cosmos-panel2 text-white"
+                    ? "nav-active text-white"
                     : "text-cosmos-muted hover:text-white hover:bg-white/[0.03]"
                 }`}
               >
@@ -48,6 +49,8 @@ export default function Navigation() {
           })}
         </nav>
         <div className="mt-auto px-2 pt-8 text-xs text-cosmos-muted leading-relaxed">
+          <div className="sidebar-orbit" aria-hidden="true" />
+          <p className="eyebrow text-cosmos-ice mb-3">Stay curious.</p>
           Sources: NASA &amp; JAXA official feeds.
           <br />
           Not affiliated with either agency.
@@ -66,6 +69,7 @@ export default function Navigation() {
               <Link
                 key={href}
                 href={href}
+                aria-current={active ? "page" : undefined}
                 className={`flex flex-col items-center justify-center gap-1 py-2.5 text-[10px] ${
                   active ? "text-cosmos-ice" : "text-cosmos-muted"
                 }`}
