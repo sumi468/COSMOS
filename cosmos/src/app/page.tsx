@@ -31,8 +31,8 @@ export default async function HomePage() {
 
       <SourceErrorNotice errors={news.errors} />
 
-      <section className="mt-8">
-        <SectionHeading eyebrow="Featured" />
+      <section id="dispatches" className="mt-8">
+        <SectionHeading eyebrow="The dispatch" title="Stories from beyond Earth" />
         {featured.length > 0 ? (
           <FeaturedNews items={featured} />
         ) : (
