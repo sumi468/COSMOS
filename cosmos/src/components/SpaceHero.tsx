@@ -1,22 +1,44 @@
 import Link from "next/link";
 
+const DESTINATIONS = [
+  { number: "01", label: "Follow the missions", detail: "Human ambition. Cosmic scale.", href: "/missions" },
+  { number: "02", label: "Catch the next launch", detail: "The countdown to what comes next.", href: "/upcoming" },
+  { number: "03", label: "See the extraordinary", detail: "The universe, through a different lens.", href: "/images" }
+];
+
 export default function SpaceHero() {
   return (
-    <header className="space-hero mb-8">
-      <div className="orbital-art" aria-hidden="true">
-        <div className="orbit orbit-one" /><div className="orbit orbit-two" />
-        <div className="planet" /><span className="orbit-moon" />
-      </div>
-      <div className="hero-copy relative z-10 max-w-xl">
-        <p className="eyebrow text-cosmos-ice flex items-center gap-3"><span className="signal-dot" /> A window into the universe</p>
-        <h1 className="mt-6 font-display text-[clamp(2.8rem,5.4vw,5rem)] leading-[1.02] tracking-[-0.055em] text-white">There’s more<br />out there<span className="text-cosmos-cyan">.</span></h1>
-        <p className="mt-5 max-w-xs text-sm md:text-base leading-relaxed text-slate-300">Discover the missions, breakthroughs, and extraordinary moments beyond Earth.</p>
-        <div className="mt-7 flex flex-wrap gap-3">
-          <Link className="motion-control rounded-full bg-cosmos-ice text-cosmos-black px-5 py-3 text-sm font-medium hover:bg-white" href="/latest">Explore the latest <span className="action-arrow" aria-hidden="true">↗</span></Link>
-          <Link className="motion-control rounded-full border border-white/20 bg-black/20 px-5 py-3 text-sm text-white hover:bg-white/10" href="/missions">Discover missions</Link>
+    <header className="space-hero mb-10">
+      <div className="hero-nebula ambient-motion" aria-hidden="true" />
+      <div className="orbital-arrival" aria-hidden="true">
+        <div className="orbital-art">
+          <div className="orbit orbit-one" /><div className="orbit orbit-two" />
+          <div className="planet" /><span className="orbit-moon" />
+          <div className="planet-coordinate eyebrow">BEYOND THE KNOWN <span>+ EXPLORE</span></div>
         </div>
       </div>
-      <div className="hero-caption eyebrow" aria-hidden="true">01 / BEYOND THE HORIZON</div>
+      <div className="hero-topline eyebrow">
+        <span className="flex items-center gap-3"><span className="signal-dot" /> Independent space journal</span>
+        <span className="hero-edition">EARTH / OUR POINT OF DEPARTURE</span>
+      </div>
+      <div className="hero-copy">
+        <p className="eyebrow hero-kicker">For the endlessly curious</p>
+        <h1 className="hero-title font-display">GO BEYOND.<br /><span>STAY CURIOUS.</span></h1>
+        <p className="hero-description">A small window into an infinite universe.<br />Discover the missions, ideas, and moments<br className="hidden sm:block" /> taking us further.</p>
+        <div className="hero-actions">
+          <Link className="motion-control hero-primary" href="/latest">Start exploring <span className="action-arrow" aria-hidden="true">↗</span></Link>
+          <a className="motion-control hero-secondary" href="#dispatches">The latest dispatches <span aria-hidden="true">↓</span></a>
+        </div>
+      </div>
+      <div className="hero-destinations">
+        {DESTINATIONS.map((destination) => (
+          <Link key={destination.number} href={destination.href} className="hero-destination">
+            <span className="eyebrow destination-number">{destination.number}</span>
+            <span><span className="destination-title">{destination.label}</span><span className="destination-detail">{destination.detail}</span></span>
+            <span className="destination-arrow" aria-hidden="true">↗</span>
+          </Link>
+        ))}
+      </div>
     </header>
   );
 }
