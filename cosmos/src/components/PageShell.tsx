@@ -1,7 +1,8 @@
 import type { ReactNode } from "react";
+import MotionSurface from "@/components/MotionSurface";
 
 export default function PageShell({ children }: { children: ReactNode }) {
-  return <div className="page-shell max-w-shell mx-auto px-5 md:px-8 py-8 md:py-10">{children}</div>;
+  return <MotionSurface>{children}</MotionSurface>;
 }
 
 export function SectionHeading({

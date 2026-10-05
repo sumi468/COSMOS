@@ -14,7 +14,7 @@ export default function FeaturedNews({ items }: { items: NewsItem[] }) {
       {/* Lead story — image sits in normal flow (no text-over-image scrim),
           so the layout degrades gracefully to a pure text teaser when
           there's no image, instead of needing a placeholder. */}
-      <Link href={`/news/${lead.id}`} className="group block lg:col-span-2">
+      <Link href={`/news/${lead.id}`} className="motion-card group block lg:col-span-2">
         {lead.imageUrl && (
           <div className="relative aspect-[16/10] rounded-xl overflow-hidden bg-cosmos-panel2">
             <Image
@@ -47,7 +47,7 @@ export default function FeaturedNews({ items }: { items: NewsItem[] }) {
             <Link
               key={item.id}
               href={`/news/${item.id}`}
-              className="group flex gap-3.5 py-5 first:pt-0 lg:py-0"
+              className="motion-card news-row group flex gap-3.5 py-5 first:pt-0 lg:py-0"
             >
               {item.imageUrl && (
                 <div className="relative w-16 h-16 shrink-0 rounded-lg overflow-hidden bg-cosmos-panel2">

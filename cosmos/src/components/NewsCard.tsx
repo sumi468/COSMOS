@@ -9,7 +9,7 @@ export default function NewsCard({ item }: { item: NewsItem }) {
   return (
     <Link
       href={`/news/${item.id}`}
-      className="group flex gap-4 py-5 border-b border-cosmos-line last:border-b-0"
+      className="motion-card news-row group flex gap-4 py-5 border-b border-cosmos-line last:border-b-0"
     >
       <div className="relative hidden sm:block w-28 h-20 shrink-0 rounded-lg overflow-hidden bg-cosmos-panel2">
         {item.imageUrl ? (

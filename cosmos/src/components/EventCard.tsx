@@ -11,7 +11,7 @@ export default function EventCard({ event }: { event: UpcomingEvent }) {
   return (
     <Link
       href={`/upcoming/${event.id}`}
-      className="group flex items-center gap-4 rounded-2xl border border-cosmos-line p-4 hover:border-cosmos-ice/30 transition-colors"
+      className="motion-card event-card group flex items-center gap-4 rounded-2xl border border-cosmos-line p-4 hover:border-cosmos-ice/30 transition-colors"
     >
       <div className="flex flex-col items-center justify-center w-14 h-14 shrink-0 rounded-xl bg-cosmos-panel2 border border-cosmos-line">
         <span className="eyebrow text-cosmos-muted">{month}</span>
