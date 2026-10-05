@@ -63,16 +63,6 @@ body::before {
   border-color: rgba(255, 255, 255, 0.08);
 }
 
-/* Respect reduced-motion preferences per the frontend design skill */
-@media (prefers-reduced-motion: reduce) {
-  * {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-    scroll-behavior: auto !important;
-  }
-}
-
 .tabular-nums {
   font-variant-numeric: tabular-nums;
 }
@@ -106,4 +96,72 @@ select:focus-visible {
   outline: 2px solid #49d4e8;
   outline-offset: 2px;
   border-radius: 4px;
+}
+
+/* Short, responsive interactions; only transform/opacity move continuously. */
+:root { --motion-ease: cubic-bezier(.2, .7, .2, 1); }
+.motion-card, .motion-control, .nav-link {
+  transition: transform 180ms var(--motion-ease), background-color 180ms ease, border-color 180ms ease, color 180ms ease;
+  -webkit-tap-highlight-color: rgba(174, 227, 245, .12);
+}
+.nav-link svg, .action-arrow { transition: transform 180ms var(--motion-ease); }
+.action-arrow { display: inline-block; margin-left: 3px; }
+.nav-link[aria-current="page"] svg { transform: translateY(-1px); }
+.motion-card:focus-visible { border-color: #aee3f570; }
+.image-card { transition: border-color 180ms ease; }
+.image-card img { transition: transform 350ms var(--motion-ease); }
+input[type="search"] { transition: border-color 160ms ease, background-color 160ms ease; }
+input[type="search"]:focus { background-color: #142135; }
+.ai-summary button { transition: transform 160ms var(--motion-ease), background-color 160ms ease; }
+
+@media (hover: hover) and (pointer: fine) {
+  a.motion-card:hover { transform: translateY(-3px); }
+  a.news-row:hover { transform: translateX(4px); }
+  .motion-control:hover { transform: translateY(-2px); }
+  .motion-control:hover .action-arrow { transform: translate(2px, -2px); }
+  .nav-link:hover svg { transform: translateY(-2px); }
+  .image-card:hover { border-color: #aee3f550; }
+  .image-card:hover img { transform: scale(1.025); }
+}
+a.motion-card:active, .motion-control:active, .ai-summary button:not(:disabled):active {
+  transform: scale(.985);
+  transition-duration: 80ms;
+}
+.nav-link:active svg { transform: scale(.88); }
+
+/* Ambient movement runs only while the hero is on screen and the tab is visible. */
+.planet { animation: planet-drift 14s ease-in-out infinite; }
+.orbit-one { animation: orbit-drift 18s ease-in-out infinite; }
+.orbit-two { animation: orbit-drift 23s ease-in-out infinite reverse; }
+.orbit-moon { animation: moon-drift 11s ease-in-out infinite; }
+.space-hero::before { animation: star-breathe 9s ease-in-out infinite; }
+.signal-dot { position: relative; }
+.signal-dot::after { content: ""; position: absolute; inset: -4px; border: 1px solid #aee3f580; border-radius: 50%; animation: signal-wave 3.5s ease-out infinite; }
+.space-hero .orbital-art > *, .space-hero::before, .signal-dot::after { animation-play-state: paused; }
+.space-hero[data-motion="running"] .orbital-art > *,
+.space-hero[data-motion="running"]::before,
+.space-hero[data-motion="running"] .signal-dot::after { animation-play-state: running; }
+.hero-copy > * { animation: arrive 450ms var(--motion-ease) both; }
+.hero-copy > :nth-child(2) { animation-delay: 40ms; }
+.hero-copy > :nth-child(3) { animation-delay: 80ms; }
+.hero-copy > :nth-child(4) { animation-delay: 120ms; }
+
+.loading-placeholder { background: #111e30; animation: loading-breathe 1.6s ease-in-out infinite; }
+.loading-beacon { width: 8px; height: 8px; border-radius: 50%; background: #aee3f5; animation: loading-breathe 1.6s ease-in-out infinite; }
+@keyframes arrive { from { opacity: .5; translate: 0 10px; } to { opacity: 1; translate: 0 0; } }
+@keyframes planet-drift { 0%, 100% { transform: translateY(0) rotate(-28deg); } 50% { transform: translateY(-12px) rotate(-26deg); } }
+@keyframes orbit-drift { 0%, 100% { transform: rotate(-30deg); } 50% { transform: rotate(-25deg); } }
+@keyframes moon-drift { 0%, 100% { transform: translate(0, 0); } 50% { transform: translate(-18px, 10px); } }
+@keyframes star-breathe { 0%, 100% { opacity: .5; } 50% { opacity: .8; } }
+@keyframes signal-wave { 0% { transform: scale(.6); opacity: 0; } 20% { opacity: .7; } 80%, 100% { transform: scale(1.8); opacity: 0; } }
+@keyframes loading-breathe { 0%, 100% { opacity: .45; } 50% { opacity: .85; } }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation: none !important;
+    transition: none !important;
+    scroll-behavior: auto !important;
+  }
+  a.motion-card, .motion-control, .nav-link svg, .action-arrow,
+  .image-card img, .ai-summary button { transform: none !important; }
 }

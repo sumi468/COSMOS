@@ -15,7 +15,7 @@ function Chip({ href, active, children }: { href: string; active: boolean; child
   return (
     <Link
       href={href}
-      className={`shrink-0 rounded-full border px-3.5 py-1.5 text-sm transition-colors ${
+      className={`motion-control shrink-0 rounded-full border px-3.5 py-1.5 text-sm transition-colors ${
         active
           ? "border-cosmos-ice/40 bg-cosmos-ice/10 text-cosmos-ice"
           : "border-cosmos-line text-cosmos-muted hover:text-white hover:border-white/20"

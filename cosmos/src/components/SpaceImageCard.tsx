@@ -4,7 +4,7 @@ import type { SpaceImage } from "@/types/cosmos";
 
 export default function SpaceImageCard({ image, priority = false }: { image: SpaceImage; priority?: boolean }) {
   return (
-    <div className="rounded-2xl border border-cosmos-line overflow-hidden">
+    <div className="motion-card image-card rounded-2xl border border-cosmos-line overflow-hidden">
       <div className="relative aspect-[4/3] bg-cosmos-panel2">
         {image.mediaType === "image" ? (
           <Image
