@@ -6,6 +6,7 @@ import ArticlePlaceholder from "@/components/ArticlePlaceholder";
 import AiSummary from "@/components/AiSummary";
 import { formatLocalDateTime, relativeTime } from "@/lib/format";
 import { getAllNews } from "@/lib/news";
+import { getLocalization } from "@/lib/localization";
 
 export const revalidate = 300;
 
@@ -14,19 +15,21 @@ export default async function NewsDetailPage({ params }: { params: { id: string 
   const item = news.items.find((n) => n.id === params.id);
   if (!item) notFound();
 
+  const { locale, copy } = getLocalization();
+
   return (
     <PageShell>
-      <Link href="/latest" className="text-sm text-cosmos-muted hover:text-white">&larr; Back to Latest</Link>
+      <Link href="/latest" className="text-sm text-cosmos-muted hover:text-white">&larr; {copy.news.back}</Link>
 
       <article className="mt-6 max-w-2xl">
         <div className="eyebrow text-cosmos-ice">{item.source}</div>
         <h1 className="mt-2 font-display text-2xl md:text-3xl leading-tight text-white">{item.title}</h1>
         <div className="mt-3 flex flex-wrap items-center gap-3 text-xs text-cosmos-muted">
-          <span>{formatLocalDateTime(item.publishedAt)}</span>
+          <span>{formatLocalDateTime(item.publishedAt, locale)}</span>
           <span className="text-cosmos-muted/40">&middot;</span>
-          <span>{relativeTime(item.publishedAt)}</span>
+          <span>{relativeTime(item.publishedAt, locale)}</span>
           <span className="text-cosmos-muted/40">&middot;</span>
-          <span className="rounded-full border border-cosmos-line px-2 py-0.5">{item.category}</span>
+          <span className="rounded-full border border-cosmos-line px-2 py-0.5">{copy.category[item.category]}</span>
         </div>
 
         <div className="relative mt-6 aspect-video rounded-2xl overflow-hidden border border-cosmos-line">
@@ -37,23 +40,22 @@ export default async function NewsDetailPage({ params }: { params: { id: string 
           )}
         </div>
 
-        <AiSummary key={item.id} id={item.id} />
+        <AiSummary key={`${item.id}-${locale}`} id={item.id} />
         <div className="mt-6 border-t border-cosmos-line pt-6">
-          <p className="eyebrow text-cosmos-muted mb-2">Source excerpt</p>
+          <p className="eyebrow text-cosmos-muted mb-2">{copy.news.excerpt}</p>
           {item.summary?.trim() ? (
             <p className="text-[15px] leading-relaxed text-cosmos-white/90 whitespace-pre-line">{item.summary}</p>
           ) : (
             <p className="text-[15px] leading-relaxed text-cosmos-amber">
-              要約を取得できませんでした。下記の公式記事でご確認ください。
+              {item.excerptNotice ? copy.news[item.excerptNotice] : copy.news.excerptUnavailable}
             </p>
           )}
         </div>
 
         <div className="mt-8 rounded-2xl border border-cosmos-line p-5">
-          <p className="eyebrow text-cosmos-muted mb-1">Official Source</p>
+          <p className="eyebrow text-cosmos-muted mb-1">{copy.common.officialSource}</p>
           <p className="text-sm text-cosmos-muted mb-3">
-            Published via {item.feedName}. COSMOS shows a short summary only &mdash; read the full article on{" "}
-            {item.source}&rsquo;s own site.
+            {copy.news.publishedVia(item.feedName, item.source)}
           </p>
           <a
             href={item.officialUrl}
@@ -61,7 +63,7 @@ export default async function NewsDetailPage({ params }: { params: { id: string 
             rel="noopener noreferrer"
             className="inline-flex items-center gap-1.5 rounded-lg bg-cosmos-ice text-cosmos-black text-sm font-medium px-4 py-2 hover:opacity-90 transition-opacity"
           >
-            Read official article &rarr;
+            {copy.news.readArticle} &rarr;
           </a>
         </div>
       </article>

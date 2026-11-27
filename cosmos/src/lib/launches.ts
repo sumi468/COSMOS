@@ -1,7 +1,7 @@
 import { encodeId } from "@/lib/id";
 import { getLastGood, setLastGood } from "@/lib/cache";
 import { fetchCache } from "@/lib/fetchPolicy";
-import type { Agency, EventKind, FetchResult, UpcomingEvent } from "@/types/cosmos";
+import type { Agency, EventKind, FetchResult, SourceFetchError, UpcomingEvent } from "@/types/cosmos";
 
 // Launch Library 2 (https://ll.thespacedevs.com) is a free, key-free,
 // community-maintained public database of rocket launches and space
@@ -41,12 +41,12 @@ async function fetchLaunches(agencySearch: string): Promise<any[]> {
 }
 
 export async function getUpcomingEvents(): Promise<FetchResult<UpcomingEvent>> {
-  const errors: string[] = [];
+  const errors: SourceFetchError[] = [];
   const collected: UpcomingEvent[] = [];
   const seenIds = new Set<string>();
 
   await Promise.all(
-    ["NASA", "JAXA"].map(async (agencyQuery) => {
+    (["NASA", "JAXA"] as const).map(async (agencyQuery) => {
       try {
         const launches = await fetchLaunches(agencyQuery);
         for (const launch of launches) {
@@ -76,8 +76,8 @@ export async function getUpcomingEvents(): Promise<FetchResult<UpcomingEvent>> {
             location: [launch.pad?.name, launch.pad?.location?.name].filter(Boolean).join(", ")
           });
         }
-      } catch (err) {
-        errors.push(`${agencyQuery}の今後のイベントを取得できませんでした`);
+      } catch {
+        errors.push({ agency: agencyQuery });
       }
     })
   );
@@ -99,6 +99,3 @@ export async function getUpcomingEventById(id: string): Promise<UpcomingEvent | 
   const { items } = await getUpcomingEvents();
   return items.find((e) => e.id === id) ?? null;
 }
-
-// Attribution required by The Space Devs for derived data.
-export const LAUNCH_LIBRARY_ATTRIBUTION = "Launch data: The Space Devs — Launch Library 2 (thespacedevs.com)";

@@ -21,6 +21,7 @@ export interface NewsItem {
   source: Agency;
   title: string;
   summary: string;
+  excerptNotice?: "noExcerpt" | "japaneseOnly";
   sourceText?: string; // Longer official text for AI input; not the generated summary.
   publishedAt: string; // ISO 8601, from the feed — never guessed
   officialUrl: string;
@@ -72,9 +73,15 @@ export interface UpcomingEvent {
   location?: string;
 }
 
+export interface SourceFetchError {
+  agency: Agency;
+  feed?: string;
+  detail?: string;
+}
+
 export interface FetchResult<T> {
   items: T[];
   updatedAt: string; // ISO timestamp of this successful fetch
   stale: boolean; // true if served from last-known-good cache after a failure
-  errors: string[]; // human-readable, per-source fetch problems (non-fatal)
+  errors: SourceFetchError[]; // non-fatal per-source fetch problems
 }

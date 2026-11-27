@@ -2,15 +2,16 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useLanguage } from "@/components/LanguageProvider";
 
 const ITEMS = [
-  { href: "/", label: "Home", icon: HomeIcon },
-  { href: "/latest", label: "Latest", icon: LatestIcon },
-  { href: "/missions", label: "Missions", icon: MissionsIcon },
-  { href: "/upcoming", label: "Upcoming", icon: UpcomingIcon },
-  { href: "/images", label: "Images", icon: ImagesIcon },
-  { href: "/settings", label: "Settings", icon: SettingsIcon }
-];
+  { href: "/", label: "home", icon: HomeIcon },
+  { href: "/latest", label: "latest", icon: LatestIcon },
+  { href: "/missions", label: "missions", icon: MissionsIcon },
+  { href: "/upcoming", label: "upcoming", icon: UpcomingIcon },
+  { href: "/images", label: "images", icon: ImagesIcon },
+  { href: "/settings", label: "settings", icon: SettingsIcon }
+] as const;
 
 function isActive(pathname: string, href: string) {
   if (href === "/") return pathname === "/";
@@ -19,6 +20,7 @@ function isActive(pathname: string, href: string) {
 
 export default function Navigation() {
   const pathname = usePathname();
+  const { copy } = useLanguage();
 
   return (
     <>
@@ -28,7 +30,7 @@ export default function Navigation() {
           <span className="cosmos-mark" aria-hidden="true">✦</span>
           <span className="font-display text-lg tracking-[0.18em]">COSMOS</span>
         </Link>
-        <nav className="flex flex-col gap-1">
+        <nav aria-label={copy.nav.label} className="flex flex-col gap-1">
           {ITEMS.map(({ href, label, icon: Icon }) => {
             const active = isActive(pathname, href);
             return (
@@ -43,22 +45,23 @@ export default function Navigation() {
                 }`}
               >
                 <Icon active={active} />
-                {label}
+                {copy.nav[label]}
               </Link>
             );
           })}
         </nav>
         <div className="mt-auto px-2 pt-8 text-xs text-cosmos-muted leading-relaxed">
           <div className="sidebar-orbit" aria-hidden="true" />
-          <p className="eyebrow text-cosmos-ice mb-3">Stay curious.</p>
-          Sources: NASA &amp; JAXA official feeds.
+          <p className="eyebrow text-cosmos-ice mb-3">{copy.nav.motto}</p>
+          {copy.nav.sources}
           <br />
-          Not affiliated with either agency.
+          {copy.nav.independent}
         </div>
       </aside>
 
       {/* Mobile bottom tab bar */}
       <nav
+        aria-label={copy.nav.label}
         className="md:hidden fixed bottom-0 inset-x-0 z-40 border-t border-cosmos-line bg-cosmos-black/95 backdrop-blur supports-[backdrop-filter]:bg-cosmos-black/80"
         style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
       >
@@ -75,7 +78,7 @@ export default function Navigation() {
                 }`}
               >
                 <Icon active={active} />
-                {label}
+                {copy.nav[label]}
               </Link>
             );
           })}

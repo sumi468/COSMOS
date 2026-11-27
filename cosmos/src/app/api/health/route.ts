@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { getNasaNews, getApod } from "@/lib/nasa";
 import { getJaxaNews } from "@/lib/jaxa";
 import { getUpcomingEvents } from "@/lib/launches";
+import { formatSourceError } from "@/lib/localization";
 
 /**
  * Debug/observability endpoint. Visit /api/health to see, per source,
@@ -23,7 +24,7 @@ export async function GET() {
     nasa: {
       count: nasa.items.length,
       stale: nasa.stale,
-      errors: nasa.errors,
+      errors: nasa.errors.map((error) => formatSourceError(error, "ja")),
       updatedAt: nasa.updatedAt,
       withImage: nasa.items.filter((i) => i.imageUrl).length,
       sample: nasa.items.slice(0, 3).map((i) => ({
@@ -35,7 +36,7 @@ export async function GET() {
     jaxa: {
       count: jaxa.items.length,
       stale: jaxa.stale,
-      errors: jaxa.errors,
+      errors: jaxa.errors.map((error) => formatSourceError(error, "ja")),
       updatedAt: jaxa.updatedAt,
       withImage: jaxa.items.filter((i) => i.imageUrl).length,
       sample: jaxa.items.slice(0, 3).map((i) => ({
@@ -45,6 +46,6 @@ export async function GET() {
       }))
     },
     apod: { ok: Boolean(apod.image), stale: apod.stale, error: apod.error },
-    events: { count: events.items.length, stale: events.stale, errors: events.errors, updatedAt: events.updatedAt }
+    events: { count: events.items.length, stale: events.stale, errors: events.errors.map((error) => formatSourceError(error, "ja")), updatedAt: events.updatedAt }
   });
 }

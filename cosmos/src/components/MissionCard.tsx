@@ -1,4 +1,6 @@
 import Link from "next/link";
+import { getLocalization } from "@/lib/localization";
+import { localizeMission, type MissionProfile } from "@/lib/missions";
 import type { Mission } from "@/types/cosmos";
 
 const STATUS_STYLES: Record<Mission["status"], string> = {
@@ -8,7 +10,10 @@ const STATUS_STYLES: Record<Mission["status"], string> = {
   Completed: "text-cosmos-muted border-cosmos-line bg-white/[0.03]"
 };
 
-export default function MissionCard({ mission }: { mission: Mission }) {
+export default function MissionCard({ mission }: { mission: MissionProfile }) {
+  const { locale, copy } = getLocalization();
+  const { name, description, target } = localizeMission(mission, locale);
+
   return (
     <Link
       href={`/missions/${mission.slug}`}
@@ -16,19 +21,19 @@ export default function MissionCard({ mission }: { mission: Mission }) {
     >
       <div>
         <div className="flex items-center justify-between gap-2">
-          <span className="eyebrow text-cosmos-muted">{mission.organization}</span>
+          <span className="eyebrow text-cosmos-muted">{copy.agency[mission.organization]}</span>
           <span className={`text-[11px] px-2 py-0.5 rounded-full border ${STATUS_STYLES[mission.status]}`}>
-            {mission.status}
+            {copy.missionStatus[mission.status]}
           </span>
         </div>
         <h3 className="mt-2 font-display text-lg text-white group-hover:text-cosmos-ice transition-colors">
-          {mission.name}
+          {name}
         </h3>
-        <p className="mt-1.5 text-sm text-cosmos-muted line-clamp-3">{mission.description}</p>
+        <p className="mt-1.5 text-sm text-cosmos-muted line-clamp-3">{description}</p>
       </div>
-      {mission.target && (
+      {target && (
         <p className="text-xs text-cosmos-muted/70">
-          Target &middot; <span className="text-cosmos-muted">{mission.target}</span>
+          {copy.common.target} &middot; <span className="text-cosmos-muted">{target}</span>
         </p>
       )}
     </Link>

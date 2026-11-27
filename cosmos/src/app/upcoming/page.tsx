@@ -2,19 +2,23 @@ import PageShell, { SectionHeading } from "@/components/PageShell";
 import EventCard from "@/components/EventCard";
 import UpdatedBadge from "@/components/UpdatedBadge";
 import { SourceErrorNotice, EmptyState } from "@/components/EmptyState";
-import { getUpcomingEvents, LAUNCH_LIBRARY_ATTRIBUTION } from "@/lib/launches";
+import { getUpcomingEvents } from "@/lib/launches";
+import { getLocalization } from "@/lib/localization";
 
 export const revalidate = 900;
-export const metadata = { title: "Upcoming" };
+export function generateMetadata() {
+  return { title: getLocalization().copy.nav.upcoming };
+}
 
 export default async function UpcomingPage() {
+  const { copy } = getLocalization();
   const events = await getUpcomingEvents();
 
   return (
     <PageShell>
       <SectionHeading
-        eyebrow="Upcoming"
-        title="What's next in space"
+        eyebrow={copy.nav.upcoming}
+        title={copy.upcoming.title}
         action={<UpdatedBadge updatedAt={events.updatedAt} stale={events.stale} />}
       />
       <SourceErrorNotice errors={events.errors} />
@@ -28,12 +32,12 @@ export default async function UpcomingPage() {
       ) : (
         <div className="mt-6">
           <EmptyState
-            title="No confirmed NASA or JAXA launches found"
-            message="Check back soon, or visit the official launch schedules directly."
+            title={copy.upcoming.noLaunches}
+            message={copy.upcoming.checkSchedules}
           />
         </div>
       )}
-      <p className="mt-4 text-xs text-cosmos-muted/60">{LAUNCH_LIBRARY_ATTRIBUTION}. Dates are shown in your local time.</p>
+      <p className="mt-4 text-xs text-cosmos-muted/60">{copy.upcoming.attribution} {copy.upcoming.localDates}</p>
     </PageShell>
   );
 }

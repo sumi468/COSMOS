@@ -4,7 +4,7 @@ import { encodeId } from "@/lib/id";
 import { getLastGood, setLastGood } from "@/lib/cache";
 import { fetchCache } from "@/lib/fetchPolicy";
 import { capSummary, extractLeadParagraphs, firstImageSrc, looksUnusable } from "@/lib/text";
-import type { FetchResult, NewsItem, SpaceImage } from "@/types/cosmos";
+import type { FetchResult, NewsItem, SourceFetchError, SpaceImage } from "@/types/cosmos";
 
 // All endpoints below are NASA's own public, key-free RSS feeds — listed at
 // https://www.nasa.gov/rss-feeds/. No scraping is used for news.
@@ -42,7 +42,7 @@ function buildImageUrl(enclosureImageUrl: string | undefined, contentHtml: strin
 }
 
 export async function getNasaNews(): Promise<FetchResult<NewsItem>> {
-  const errors: string[] = [];
+  const errors: SourceFetchError[] = [];
   const collected: NewsItem[] = [];
   const seen = new Set<string>();
   const debug: Record<string, string> = {};
@@ -74,7 +74,7 @@ export async function getNasaNews(): Promise<FetchResult<NewsItem>> {
       } catch (err) {
         const message = err instanceof Error ? err.message : String(err);
         debug[feed.name] = `failed: ${message}`;
-        errors.push(`NASAの最新情報を取得できませんでした（${feed.name}）: ${message}`);
+        errors.push({ agency: "NASA", feed: feed.name, detail: message });
       }
     })
   );

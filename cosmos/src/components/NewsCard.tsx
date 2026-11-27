@@ -3,9 +3,13 @@ import Image from "next/image";
 import { relativeTime } from "@/lib/format";
 import { previewText } from "@/lib/text";
 import ArticlePlaceholder from "@/components/ArticlePlaceholder";
+import { getLocalization } from "@/lib/localization";
 import type { NewsItem } from "@/types/cosmos";
 
 export default function NewsCard({ item }: { item: NewsItem }) {
+  const { locale, copy } = getLocalization();
+  const excerpt = item.excerptNotice ? copy.news[item.excerptNotice] : item.summary;
+
   return (
     <Link
       href={`/news/${item.id}`}
@@ -28,13 +32,13 @@ export default function NewsCard({ item }: { item: NewsItem }) {
         <div className="flex items-center gap-2 eyebrow text-cosmos-ice/80">
           <span>{item.source}</span>
           <span className="text-cosmos-muted/60">&middot;</span>
-          <span className="text-cosmos-muted">{item.category}</span>
+          <span className="text-cosmos-muted">{copy.category[item.category]}</span>
         </div>
         <h3 className="mt-1.5 font-display text-[15px] leading-snug text-white group-hover:text-cosmos-ice transition-colors line-clamp-2">
           {item.title}
         </h3>
-        <p className="mt-1 text-sm text-cosmos-muted">{previewText(item.summary, 160)}</p>
-        <p className="mt-1.5 text-xs text-cosmos-muted/70">{relativeTime(item.publishedAt)}</p>
+        <p className="mt-1 text-sm text-cosmos-muted">{previewText(excerpt, 160)}</p>
+        <p className="mt-1.5 text-xs text-cosmos-muted/70">{relativeTime(item.publishedAt, locale)}</p>
       </div>
     </Link>
   );

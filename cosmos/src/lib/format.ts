@@ -1,41 +1,42 @@
+import { DEFAULT_LOCALE, type Locale } from "@/lib/language";
+import { messages } from "@/lib/messages";
+
 // Formatting helpers. All dates are kept as ISO strings from their source
 // feed/API and only formatted for display here — never invented.
 
-export function relativeTime(iso: string, now: Date = new Date()): string {
+export function relativeTime(iso: string, locale: Locale = DEFAULT_LOCALE, now: Date = new Date()): string {
   const then = new Date(iso).getTime();
   if (Number.isNaN(then)) return "";
   const diffMs = now.getTime() - then;
   const diffSec = Math.round(diffMs / 1000);
 
-  if (diffSec < 60) return "Just now";
+  const { time } = messages[locale];
+  if (diffSec < 60) return time.justNow;
   const diffMin = Math.round(diffSec / 60);
-  if (diffMin < 60) return `${diffMin}m ago`;
+  if (diffMin < 60) return time.minutesAgo(diffMin);
   const diffHr = Math.round(diffMin / 60);
-  if (diffHr < 24) return `${diffHr}h ago`;
+  if (diffHr < 24) return time.hoursAgo(diffHr);
   const diffDay = Math.round(diffHr / 24);
-  if (diffDay === 1) return "Yesterday";
-  if (diffDay < 7) return `${diffDay}d ago`;
-  return new Date(iso).toLocaleDateString(undefined, {
-    year: "numeric",
-    month: "short",
-    day: "numeric"
-  });
+  if (diffDay === 1) return time.yesterday;
+  if (diffDay < 7) return time.daysAgo(diffDay);
+  return formatLocalDate(iso, locale);
 }
 
-export function updatedLabel(iso: string, now: Date = new Date()): string {
+export function updatedLabel(iso: string, locale: Locale = DEFAULT_LOCALE, now: Date = new Date()): string {
   const diffMs = now.getTime() - new Date(iso).getTime();
   const diffMin = Math.round(diffMs / 60000);
-  if (diffMin < 1) return "Updated just now";
-  if (diffMin < 60) return `Updated ${diffMin} min ago`;
+  const { time } = messages[locale];
+  if (diffMin < 1) return time.updatedNow;
+  if (diffMin < 60) return time.updatedMinutes(diffMin);
   const diffHr = Math.round(diffMin / 60);
-  if (diffHr < 24) return `Updated ${diffHr}h ago`;
-  return "Updated today";
+  if (diffHr < 24) return time.updatedHours(diffHr);
+  return time.updatedToday;
 }
 
-export function formatLocalDateTime(iso: string): string {
+export function formatLocalDateTime(iso: string, locale: Locale = DEFAULT_LOCALE): string {
   const d = new Date(iso);
   if (Number.isNaN(d.getTime())) return iso;
-  return d.toLocaleString(undefined, {
+  return d.toLocaleString(locale, {
     weekday: "short",
     year: "numeric",
     month: "short",
@@ -46,10 +47,26 @@ export function formatLocalDateTime(iso: string): string {
   });
 }
 
-export function formatLocalDate(iso: string): string {
+export function formatLocalDate(iso: string, locale: Locale = DEFAULT_LOCALE): string {
   const d = new Date(iso);
   if (Number.isNaN(d.getTime())) return iso;
-  return d.toLocaleDateString(undefined, { year: "numeric", month: "short", day: "numeric" });
+  return d.toLocaleDateString(locale, { year: "numeric", month: "short", day: "numeric" });
+}
+
+const japaneseLaunchStatuses = new Map([
+  ["TBD", "未定"],
+  ["To Be Determined", "未定"],
+  ["To Be Confirmed", "確認待ち"],
+  ["Go for Launch", "打ち上げ予定"],
+  ["Hold", "一時保留"],
+  ["Launch in Flight", "飛行中"],
+  ["Launch Successful", "打ち上げ成功"],
+  ["Launch Failure", "打ち上げ失敗"],
+  ["Launch Was a Partial Failure", "打ち上げは一部失敗"]
+]);
+
+export function launchStatusLabel(status: string, locale: Locale): string {
+  return locale === "ja" ? japaneseLaunchStatuses.get(status) ?? status : status;
 }
 
 export interface Countdown {

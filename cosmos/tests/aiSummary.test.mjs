@@ -1,15 +1,13 @@
 import { test, afterEach } from "node:test";
 import assert from "node:assert/strict";
-import { readFile } from "node:fs/promises";
-import ts from "typescript";
+import { summaryModule } from "./summaryModule.mjs";
 
 const originalFetch = globalThis.fetch;
 const oldKey = process.env.GEMINI_API_KEY;
 const oldModel = process.env.GEMINI_SUMMARY_MODEL;
-const source = await readFile(new URL("../src/lib/aiSummary.ts", import.meta.url), "utf8");
-const js = ts.transpileModule(source, { compilerOptions: { module: ts.ModuleKind.ESNext, target: ts.ScriptTarget.ES2022 } }).outputText;
+const url = await summaryModule("lib/aiSummary.ts");
 let moduleNumber = 0;
-const fresh = () => import(`data:text/javascript;base64,${Buffer.from(js).toString("base64")}#${moduleNumber++}`);
+const fresh = () => import(`${url}#${moduleNumber++}`);
 const article = { title: "Test mission", officialUrl: "https://www.nasa.gov/test", summary: "NASA announced a science mission. The spacecraft will study the Moon, with its launch date still under review." };
 const output = (text = "NASA announced a planned lunar science mission. A launch date has not been confirmed.") => ({ status: "completed", steps: [{ type: "thought", content: [{ type: "text", text: "Private reasoning" }] }, { type: "model_output", content: [{ type: "text", text }] }] });
 afterEach(() => {
@@ -58,6 +56,32 @@ test("concurrent and repeated requests share one generation; changed source inva
   assert.equal(calls, 1);
   await generateSummary({ ...article, summary: article.summary + " Updated." });
   assert.equal(calls, 2);
+});
+test("generates and caches separate English and Japanese summaries for the same article", async () => {
+  process.env.GEMINI_API_KEY = "test-key";
+  const japaneseText = "NASAは月を調査する科学ミッションを発表しました。打ち上げ日はまだ決まっていません。";
+  const calls = [];
+  globalThis.fetch = async (_, options) => {
+    const { system_instruction } = JSON.parse(options.body);
+    calls.push(system_instruction);
+    return Response.json(/in Japanese/.test(system_instruction) ? output(japaneseText) : output());
+  };
+
+  const { generateSummary } = await fresh();
+  const [english, japanese, duplicateJapanese] = await Promise.all([
+    generateSummary(article),
+    generateSummary(article, "ja"),
+    generateSummary(article, "ja")
+  ]);
+
+  assert.match(english.text, /lunar science/);
+  assert.equal(japanese.text, japaneseText);
+  assert.deepEqual(duplicateJapanese, japanese);
+  assert.deepEqual(await generateSummary(article, "en"), english);
+  assert.deepEqual(await generateSummary(article, "ja"), japanese);
+  assert.equal(calls.length, 2);
+  assert.match(calls[0], /in English/);
+  assert.match(calls[1], /in Japanese/);
 });
 for (const [name, response] of [
   ["incomplete output", () => Response.json({ ...output(), status: "incomplete" })],
