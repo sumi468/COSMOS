@@ -1,11 +1,13 @@
 import Link from "next/link";
 import CountdownTicker from "@/components/CountdownTicker";
-import { formatLocalDate } from "@/lib/format";
+import { formatLocalDate, launchStatusLabel } from "@/lib/format";
+import { getLocalization } from "@/lib/localization";
 import type { UpcomingEvent } from "@/types/cosmos";
 
 export default function EventCard({ event }: { event: UpcomingEvent }) {
+  const { locale, copy } = getLocalization();
   const d = new Date(event.netDate);
-  const month = d.toLocaleDateString(undefined, { month: "short" }).toUpperCase();
+  const month = d.toLocaleDateString(locale, { month: "short" }).toUpperCase();
   const day = d.getDate();
 
   return (
@@ -19,14 +21,14 @@ export default function EventCard({ event }: { event: UpcomingEvent }) {
       </div>
       <div className="min-w-0 flex-1">
         <div className="flex items-center gap-2 eyebrow text-cosmos-ice/80">
-          <span>{event.agency}</span>
+          <span>{copy.agency[event.agency]}</span>
           <span className="text-cosmos-muted/60">&middot;</span>
-          <span className="text-cosmos-muted">{event.kind}</span>
+          <span className="text-cosmos-muted">{copy.eventKind[event.kind]}</span>
         </div>
         <h3 className="mt-1 font-display text-[15px] text-white group-hover:text-cosmos-ice transition-colors line-clamp-1">
           {event.title}
         </h3>
-        <p className="mt-1 text-xs text-cosmos-muted">{formatLocalDate(event.netDate)} &middot; {event.status}</p>
+        <p className="mt-1 text-xs text-cosmos-muted">{formatLocalDate(event.netDate, locale)} &middot; {launchStatusLabel(event.status, locale)}</p>
       </div>
       <div className="shrink-0 text-right hidden sm:block">
         <CountdownTicker netDate={event.netDate} compact />

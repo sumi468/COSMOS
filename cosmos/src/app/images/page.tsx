@@ -3,11 +3,15 @@ import SpaceImageCard from "@/components/SpaceImageCard";
 import SearchBar from "@/components/SearchBar";
 import { EmptyState } from "@/components/EmptyState";
 import { getApod, searchNasaImages } from "@/lib/nasa";
+import { getLocalization } from "@/lib/localization";
 
 export const revalidate = 3600;
-export const metadata = { title: "Space Images" };
+export function generateMetadata() {
+  return { title: getLocalization().copy.images.title };
+}
 
 export default async function ImagesPage({ searchParams }: { searchParams: { q?: string } }) {
+  const { copy } = getLocalization();
   const query = searchParams.q?.trim();
   const [{ image: apod, stale, error }, gallery] = await Promise.all([
     getApod(),
@@ -16,19 +20,23 @@ export default async function ImagesPage({ searchParams }: { searchParams: { q?:
 
   return (
     <PageShell>
-      <SectionHeading eyebrow="Space Images" title="Picture of the Day" />
-      {error && <p className="text-sm text-cosmos-amber mb-4">{error}{stale ? " — showing the last saved image." : ""}</p>}
+      <SectionHeading eyebrow={copy.images.title} title={copy.images.pictureOfDay} />
+      {apod && error && (
+        <p className="text-sm text-cosmos-amber mb-4">
+          {copy.images.apodUnavailable} {stale && copy.images.savedImage}
+        </p>
+      )}
 
       {apod ? (
         <div className="max-w-2xl">
           <SpaceImageCard image={apod} priority />
         </div>
       ) : (
-        <EmptyState title="NASA APODを取得できませんでした" message="Try again shortly." />
+        <EmptyState title={copy.images.apodUnavailable} message={copy.images.retrySoon} />
       )}
 
       <div className="mt-12">
-        <SectionHeading eyebrow="Gallery" title="NASA Image and Video Library" />
+        <SectionHeading eyebrow={copy.images.gallery} title={copy.images.library} />
         <div className="mb-6">
           <SearchBar action="/images" defaultValue={query} />
         </div>
@@ -39,7 +47,7 @@ export default async function ImagesPage({ searchParams }: { searchParams: { q?:
             ))}
           </div>
         ) : (
-          <EmptyState title="No images found" message={gallery.error ?? "Try a different search term."} />
+          <EmptyState title={copy.images.noImages} message={gallery.error ? copy.images.libraryUnavailable : copy.images.searchHint} />
         )}
       </div>
     </PageShell>

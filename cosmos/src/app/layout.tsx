@@ -1,7 +1,9 @@
 import type { Metadata, Viewport } from "next";
 import type { ReactNode } from "react";
 import { Space_Grotesk, Inter, JetBrains_Mono } from "next/font/google";
+import LanguageProvider from "@/components/LanguageProvider";
 import Navigation from "@/components/Navigation";
+import { getLocalization } from "@/lib/localization";
 import "./globals.css";
 
 const display = Space_Grotesk({
@@ -20,27 +22,26 @@ const mono = JetBrains_Mono({
   variable: "--font-mono"
 });
 
-export const metadata: Metadata = {
-  title: {
-    default: "COSMOS \u2014 Explore What\u2019s Happening Beyond Earth.",
-    template: "%s \u2014 COSMOS"
-  },
-  description:
-    "Track NASA and JAXA news, missions, launches, and space imagery in one place \u2014 sourced directly from official feeds.",
-  manifest: "/manifest.json",
-  appleWebApp: {
-    capable: true,
-    statusBarStyle: "black-translucent",
-    title: "COSMOS"
-  },
-  icons: {
-    icon: [
-      { url: "/icons/favicon-32.png", sizes: "32x32", type: "image/png" },
-      { url: "/icons/icon-192.png", sizes: "192x192", type: "image/png" }
-    ],
-    apple: "/icons/apple-touch-icon.png"
-  }
-};
+export function generateMetadata(): Metadata {
+  const { copy } = getLocalization();
+  return {
+    title: { default: copy.meta.title, template: "%s — COSMOS" },
+    description: copy.meta.description,
+    manifest: "/manifest.json",
+    appleWebApp: {
+      capable: true,
+      statusBarStyle: "black-translucent",
+      title: "COSMOS"
+    },
+    icons: {
+      icon: [
+        { url: "/icons/favicon-32.png", sizes: "32x32", type: "image/png" },
+        { url: "/icons/icon-192.png", sizes: "192x192", type: "image/png" }
+      ],
+      apple: "/icons/apple-touch-icon.png"
+    }
+  };
+}
 
 export const viewport: Viewport = {
   themeColor: "#05070B",
@@ -49,13 +50,26 @@ export const viewport: Viewport = {
 };
 
 export default function RootLayout({ children }: { children: ReactNode }) {
+  const { locale, copy } = getLocalization();
+
   return (
-    <html lang="en" className={`${display.variable} ${body.variable} ${mono.variable}`}>
+    <html lang={locale} className={`${display.variable} ${body.variable} ${mono.variable}`}>
       <body className="bg-cosmos-black text-cosmos-white font-body min-h-screen">
-        <div className="flex">
-          <Navigation />
-          <main className="flex-1 min-w-0 pb-24 md:pb-0">{children}</main>
-        </div>
+        <LanguageProvider
+          locale={locale}
+          copy={{
+            nav: copy.nav,
+            languageLabel: copy.settings.language,
+            retry: copy.common.tryAgain,
+            countdown: { inProgress: copy.event.inProgress, units: copy.event.units },
+            newsError: { loadFailed: copy.news.loadFailed, retryHint: copy.news.retryHint, back: copy.news.back }
+          }}
+        >
+          <div className="flex">
+            <Navigation />
+            <main className="flex-1 min-w-0 pb-24 md:pb-0">{children}</main>
+          </div>
+        </LanguageProvider>
         <ServiceWorkerRegister />
       </body>
     </html>

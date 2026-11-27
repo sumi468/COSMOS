@@ -2,46 +2,50 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import PageShell from "@/components/PageShell";
 import NewsCard from "@/components/NewsCard";
-import { getMissionBySlug, MISSIONS } from "@/lib/missions";
+import { getMissionBySlug, localizeMission, MISSIONS } from "@/lib/missions";
 import { getAllNews } from "@/lib/news";
+import { getLocalization } from "@/lib/localization";
 
 export function generateStaticParams() {
   return MISSIONS.map((m) => ({ slug: m.slug }));
 }
 
 export default async function MissionDetailPage({ params }: { params: { slug: string } }) {
-  const mission = getMissionBySlug(params.slug);
-  if (!mission) notFound();
+  const profile = getMissionBySlug(params.slug);
+  if (!profile) notFound();
+
+  const { locale, copy } = getLocalization();
+  const mission = localizeMission(profile, locale);
 
   const news = await getAllNews();
-  const nameTokens = mission.name.toLowerCase().split(/\s+/).filter((t) => t.length > 2);
+  const nameTokens = profile.name.toLowerCase().split(/\s+/).filter((t) => t.length > 2);
   const relatedNews = news.items
     .filter((item) => nameTokens.some((t) => `${item.title} ${item.summary}`.toLowerCase().includes(t)))
     .slice(0, 5);
 
   return (
     <PageShell>
-      <Link href="/missions" className="text-sm text-cosmos-muted hover:text-white">&larr; Back to Missions</Link>
+      <Link href="/missions" className="text-sm text-cosmos-muted hover:text-white">&larr; {copy.missions.back}</Link>
 
       <div className="mt-6 max-w-2xl">
-        <div className="eyebrow text-cosmos-ice">{mission.organization}</div>
+        <div className="eyebrow text-cosmos-ice">{copy.agency[mission.organization]}</div>
         <h1 className="mt-2 font-display text-3xl text-white">{mission.name}</h1>
         <p className="mt-3 text-[15px] leading-relaxed text-cosmos-white/90">{mission.description}</p>
 
         <dl className="mt-6 grid grid-cols-2 gap-4 rounded-2xl border border-cosmos-line p-5 text-sm">
           <div>
-            <dt className="eyebrow text-cosmos-muted">Status</dt>
-            <dd className="mt-1 text-white">{mission.status}</dd>
+            <dt className="eyebrow text-cosmos-muted">{copy.common.status}</dt>
+            <dd className="mt-1 text-white">{copy.missionStatus[mission.status]}</dd>
           </div>
           {mission.target && (
             <div>
-              <dt className="eyebrow text-cosmos-muted">Target</dt>
+              <dt className="eyebrow text-cosmos-muted">{copy.common.target}</dt>
               <dd className="mt-1 text-white">{mission.target}</dd>
             </div>
           )}
           <div>
-            <dt className="eyebrow text-cosmos-muted">Organization</dt>
-            <dd className="mt-1 text-white">{mission.organization}</dd>
+            <dt className="eyebrow text-cosmos-muted">{copy.common.organization}</dt>
+            <dd className="mt-1 text-white">{copy.agency[mission.organization]}</dd>
           </div>
         </dl>
 
@@ -55,13 +59,13 @@ export default async function MissionDetailPage({ params }: { params: { slug: st
           rel="noopener noreferrer"
           className="mt-5 inline-flex items-center gap-1.5 rounded-lg bg-cosmos-ice text-cosmos-black text-sm font-medium px-4 py-2 hover:opacity-90 transition-opacity"
         >
-          Official website &rarr;
+          {copy.missions.officialSite} &rarr;
         </a>
       </div>
 
       {relatedNews.length > 0 && (
         <div className="mt-12 max-w-2xl">
-          <p className="eyebrow text-cosmos-muted mb-2">Related news</p>
+          <p className="eyebrow text-cosmos-muted mb-2">{copy.missions.relatedNews}</p>
           {relatedNews.map((item) => (
             <NewsCard key={item.id} item={item} />
           ))}

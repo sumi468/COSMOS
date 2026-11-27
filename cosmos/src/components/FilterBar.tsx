@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { ALL_CATEGORIES } from "@/lib/news";
+import { getLocalization } from "@/lib/localization";
 
 function buildHref(base: string, params: Record<string, string | undefined>) {
   const search = new URLSearchParams();
@@ -37,22 +38,24 @@ export default function FilterBar({
   category: string;
   query?: string;
 }) {
+  const { copy } = getLocalization();
+
   return (
     <div className="space-y-3">
       <div className="flex gap-2 overflow-x-auto pb-1 -mx-1 px-1">
         {(["ALL", "NASA", "JAXA"] as const).map((s) => (
           <Chip key={s} href={buildHref(basePath, { source: s, category, q: query })} active={source === s}>
-            {s}
+            {s === "ALL" ? copy.common.all : s}
           </Chip>
         ))}
       </div>
       <div className="flex gap-2 overflow-x-auto pb-1 -mx-1 px-1">
         <Chip href={buildHref(basePath, { source, category: "ALL", q: query })} active={category === "ALL"}>
-          All categories
+          {copy.common.allCategories}
         </Chip>
         {ALL_CATEGORIES.map((c) => (
           <Chip key={c} href={buildHref(basePath, { source, category: c, q: query })} active={category === c}>
-            {c}
+            {copy.category[c]}
           </Chip>
         ))}
       </div>

@@ -2,8 +2,11 @@
 
 import { useEffect, useState } from "react";
 import { countdownTo } from "@/lib/format";
+import { useLanguage } from "@/components/LanguageProvider";
 
 export default function CountdownTicker({ netDate, compact = false }: { netDate: string; compact?: boolean }) {
+  const { copy } = useLanguage();
+  const { units } = copy.countdown;
   const [now, setNow] = useState<Date | null>(null);
 
   useEffect(() => {
@@ -20,21 +23,21 @@ export default function CountdownTicker({ netDate, compact = false }: { netDate:
 
   const c = countdownTo(netDate, now);
   if (c.isPast) {
-    return <span className="font-mono tabular-nums text-cosmos-muted">In progress / TBD</span>;
+    return <span className="font-mono tabular-nums text-cosmos-muted">{copy.countdown.inProgress}</span>;
   }
 
   if (compact) {
     return (
       <span className="font-mono tabular-nums text-cosmos-cyan">
-        T&minus;{c.days}D {String(c.hours).padStart(2, "0")}H
+        T&minus;{c.days}{units.days} {String(c.hours).padStart(2, "0")}{units.hours}
       </span>
     );
   }
 
   return (
     <span className="font-mono tabular-nums text-cosmos-cyan text-lg">
-      T&minus;{c.days}D {String(c.hours).padStart(2, "0")}H {String(c.minutes).padStart(2, "0")}M{" "}
-      {String(c.seconds).padStart(2, "0")}S
+      T&minus;{c.days}{units.days} {String(c.hours).padStart(2, "0")}{units.hours} {String(c.minutes).padStart(2, "0")}{units.minutes}{" "}
+      {String(c.seconds).padStart(2, "0")}{units.seconds}
     </span>
   );
 }

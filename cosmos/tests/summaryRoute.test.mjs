@@ -1,14 +1,13 @@
 import { test, afterEach } from "node:test";
 import assert from "node:assert/strict";
-import { readFile } from "node:fs/promises";
-import ts from "typescript";
+import { summaryModule } from "./summaryModule.mjs";
 
 const oldKey = process.env.GEMINI_API_KEY;
-const source = (await readFile(new URL("../src/app/api/summary/route.ts", import.meta.url), "utf8"))
+const url = await summaryModule("app/api/summary/route.ts", (source) => source
   .replace('import { getAllNews } from "@/lib/news";', 'const getAllNews = async () => ({ items: [{ id: "known-article" }] });')
-  .replace('import { generateSummary, SummaryError } from "@/lib/aiSummary";', 'class SummaryError extends Error {} const generateSummary = async () => ({ text: "Mock English brief" });');
-const js = ts.transpileModule(source, { compilerOptions: { module: ts.ModuleKind.ESNext, target: ts.ScriptTarget.ES2022 } }).outputText;
-const { POST } = await import(`data:text/javascript;base64,${Buffer.from(js).toString("base64")}`);
+  .replace('import { generateSummary, SummaryError } from "@/lib/aiSummary";', 'class SummaryError extends Error {} const generateSummary = async (_article, locale) => ({ text: locale === "ja" ? "日本語の要約" : "Mock English brief" });')
+);
+const { POST } = await import(url);
 afterEach(() => { if (oldKey === undefined) delete process.env.GEMINI_API_KEY; else process.env.GEMINI_API_KEY = oldKey; });
 const request = (body, origin = "http://127.0.0.1:3000") => new Request("http://localhost:3000/api/summary", {
   method: "POST", headers: { host: "127.0.0.1:3000", origin }, body
@@ -19,6 +18,22 @@ test("incoming Host works even when Next reconstructs an internal URL", async ()
   assert.equal(response.status, 200);
   assert.equal((await response.json()).text, "Mock English brief");
   assert.equal(response.headers.get("cache-control"), "no-store");
+});
+test("Japanese requests use Japanese summaries and error messages", async () => {
+  const body = JSON.stringify({ id: "known-article", locale: "ja" });
+  process.env.GEMINI_API_KEY = "test";
+  const available = await POST(request(body));
+  assert.equal(available.status, 200);
+  assert.equal((await available.json()).text, "日本語の要約");
+
+  delete process.env.GEMINI_API_KEY;
+  const unavailable = await POST(request(body));
+  assert.equal(unavailable.status, 503);
+  assert.match((await unavailable.json()).error, /AI要約を利用できません/);
+});
+test("unsupported languages are rejected", async () => {
+  const response = await POST(request(JSON.stringify({ id: "known-article", locale: "fr" })));
+  assert.equal(response.status, 400);
 });
 test("cross-origin and malformed origins are rejected", async () => {
   for (const origin of ["https://other.example", "null"]) assert.equal((await POST(request("{}", origin))).status, 403);

@@ -5,7 +5,7 @@ import { getLastGood, setLastGood } from "@/lib/cache";
 import { fetchCache } from "@/lib/fetchPolicy";
 import { fetchArticleEnrichment } from "@/lib/articleEnrich";
 import { capSummary, looksUnusable } from "@/lib/text";
-import type { FetchResult, NewsItem } from "@/types/cosmos";
+import type { FetchResult, NewsItem, SourceFetchError } from "@/types/cosmos";
 
 // JAXA's official English press release RSS (RDF/RSS 1.0), linked directly
 // from JAXA's own "For Media" page (https://global.jaxa.jp/media.html →
@@ -50,10 +50,12 @@ const JAXA_FEED_HEADERS: Record<string, string> = {
  * back to the original (possibly short) description rather than inventing
  * anything, and openly show only what's real.
  */
+type ArticleExcerpt = Pick<NewsItem, "summary" | "sourceText" | "imageUrl" | "excerptNotice">;
+
 async function buildJaxaArticle(
   description: string,
   officialUrl: string
-): Promise<{ summary: string; sourceText?: string; imageUrl?: string }> {
+): Promise<ArticleExcerpt> {
   const verdict = looksUnusable(description);
   if (verdict === "ok") {
     return { summary: capSummary(description, 900), sourceText: description };
@@ -76,22 +78,16 @@ async function buildJaxaArticle(
   if (verdict === "redirect") {
     // NEVER show the raw `setTimeout(...); location.href=...` stub text,
     // regardless of whether we found an image — that was the bug here.
-    return {
-      summary:
-        "This is a Japanese-language press release with no separate English-language article. See the official source for details.",
-      imageUrl
-    };
+    return { summary: "", excerptNotice: "japaneseOnly", imageUrl };
   }
 
   // too-short / empty
-  return {
-    summary: description?.trim() || "No summary available. See the official source for details.",
-    imageUrl
-  };
+  const summary = description.trim();
+  return { summary, excerptNotice: summary ? undefined : "noExcerpt", imageUrl };
 }
 
 export async function getJaxaNews(): Promise<FetchResult<NewsItem>> {
-  const errors: string[] = [];
+  const errors: SourceFetchError[] = [];
   const collected: NewsItem[] = [];
   const seen = new Set<string>();
   const debug: Record<string, string> = {};
@@ -108,26 +104,28 @@ export async function getJaxaNews(): Promise<FetchResult<NewsItem>> {
             .filter((entry) => entry.link && entry.title && !seen.has(entry.link))
             .map(async (entry, index) => {
               seen.add(entry.link);
-              const { summary, sourceText, imageUrl } =
-                index < MAX_ENRICHMENT_PER_RUN
-                  ? await buildJaxaArticle(entry.description, entry.link)
-                  : { summary: looksUnusable(entry.description) === "redirect" ? "No summary available. See the official source for details." : capSummary(entry.description, 900), sourceText: looksUnusable(entry.description) === "redirect" ? undefined : entry.description, imageUrl: undefined };
-              return { entry, summary, sourceText, imageUrl };
+              let excerpt: ArticleExcerpt;
+              if (index < MAX_ENRICHMENT_PER_RUN) {
+                excerpt = await buildJaxaArticle(entry.description, entry.link);
+              } else if (looksUnusable(entry.description) === "redirect") {
+                excerpt = { summary: "", excerptNotice: "noExcerpt" };
+              } else {
+                excerpt = { summary: capSummary(entry.description, 900), sourceText: entry.description };
+              }
+              return { entry, excerpt };
             })
         );
 
-        for (const { entry, summary, sourceText, imageUrl } of built) {
+        for (const { entry, excerpt } of built) {
           feedCount++;
           collected.push({
             id: encodeId(entry.link),
             source: "JAXA",
             title: entry.title,
-            summary,
-            sourceText,
+            ...excerpt,
             publishedAt: entry.publishedAt,
             officialUrl: entry.link,
             category: categorize(entry.title, entry.description),
-            imageUrl,
             feedName: feed.name
           });
         }
@@ -135,7 +133,7 @@ export async function getJaxaNews(): Promise<FetchResult<NewsItem>> {
       } catch (err) {
         const message = err instanceof Error ? err.message : String(err);
         debug[feed.name] = `failed: ${message}`;
-        errors.push(`JAXAの最新情報を取得できませんでした（${feed.name}）: ${message}`);
+        errors.push({ agency: "JAXA", feed: feed.name, detail: message });
       }
     })
   );

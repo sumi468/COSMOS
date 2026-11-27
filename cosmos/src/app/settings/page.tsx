@@ -1,37 +1,42 @@
 import PageShell, { SectionHeading } from "@/components/PageShell";
+import LanguageSelector from "@/components/LanguageSelector";
+import { getLocalization } from "@/lib/localization";
 
-export const metadata = { title: "Settings" };
+export function generateMetadata() {
+  return { title: getLocalization().copy.nav.settings };
+}
 
 const SOURCES = [
-  { name: "NASA News Releases (RSS)", url: "https://www.nasa.gov/news-release/feed/" },
-  { name: "NASA Recently Published (RSS)", url: "https://www.nasa.gov/feed/" },
-  { name: "NASA Artemis (RSS)", url: "https://www.nasa.gov/missions/artemis/feed/" },
-  { name: "NASA Space Station (RSS)", url: "https://www.nasa.gov/missions/station/feed/" },
-  { name: "JAXA Press Release, English (RSS)", url: "https://global.jaxa.jp/rss/press.rdf" },
-  { name: "NASA Astronomy Picture of the Day (API)", url: "https://api.nasa.gov/" },
-  { name: "NASA Image and Video Library (API)", url: "https://images-api.nasa.gov/" },
-  { name: "Launch Library 2 by The Space Devs (API)", url: "https://thespacedevs.com/llapi" }
-];
+  { key: "nasaReleases", url: "https://www.nasa.gov/news-release/feed/" },
+  { key: "nasaLatest", url: "https://www.nasa.gov/feed/" },
+  { key: "nasaArtemis", url: "https://www.nasa.gov/missions/artemis/feed/" },
+  { key: "nasaStation", url: "https://www.nasa.gov/missions/station/feed/" },
+  { key: "jaxaReleases", url: "https://global.jaxa.jp/rss/press.rdf" },
+  { key: "apod", url: "https://api.nasa.gov/" },
+  { key: "nasaImages", url: "https://images-api.nasa.gov/" },
+  { key: "launchLibrary", url: "https://thespacedevs.com/llapi" }
+] as const;
 
 export default function SettingsPage() {
+  const { copy } = getLocalization();
+
   return (
     <PageShell>
-      <SectionHeading eyebrow="Settings" title="About COSMOS" />
+      <SectionHeading eyebrow={copy.nav.settings} />
+      <LanguageSelector />
+      <h2 className="font-display text-xl text-white mb-3">{copy.settings.about}</h2>
       <p className="text-sm text-cosmos-white/90 max-w-lg leading-relaxed">
-        COSMOS aggregates real-time public information directly from NASA and JAXA&rsquo;s own official
-        feeds and APIs. Titles, source excerpts, dates, and links come from the original source.
-        On article pages, you can generate an English AI brief from the available source text.
-        AI briefs are labeled separately and may contain mistakes; every article links to its official source.
+        {copy.settings.description}
       </p>
 
       <div className="mt-8 max-w-lg">
-        <p className="eyebrow text-cosmos-muted mb-3">Data sources</p>
+        <p className="eyebrow text-cosmos-muted mb-3">{copy.settings.sources}</p>
         <ul className="divide-y divide-cosmos-line rounded-2xl border border-cosmos-line overflow-hidden">
           {SOURCES.map((s) => (
             <li key={s.url} className="flex items-center justify-between gap-3 px-4 py-3 text-sm">
-              <span className="text-white">{s.name}</span>
+              <span className="text-white">{copy.sources[s.key]}</span>
               <a href={s.url} target="_blank" rel="noopener noreferrer" className="text-cosmos-ice text-xs shrink-0 hover:underline">
-                Visit &rarr;
+                {copy.settings.visit} &rarr;
               </a>
             </li>
           ))}
@@ -40,10 +45,7 @@ export default function SettingsPage() {
 
       <div className="mt-8 max-w-lg text-xs text-cosmos-muted leading-relaxed">
         <p>
-          COSMOS is an independent, unofficial app. It is not produced, endorsed, or affiliated with NASA
-          or JAXA. NASA content is generally not copyrighted in the United States; JAXA press materials
-          remain subject to JAXA&rsquo;s own usage policies. Always confirm mission-critical or time-critical
-          details on the agencies&rsquo; own sites.
+          {copy.settings.independence}
         </p>
       </div>
     </PageShell>
