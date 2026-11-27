@@ -39,7 +39,7 @@ These caches and limits are process-local; they reset on restarts and are not sh
 
 ## Interface
 
-The app uses a deep-space star field, an illustrated planetary horizon, orbit details, and translucent panels. Desktop uses a sticky sidebar; mobile uses bottom navigation. Decorative visuals are CSS-only, need no external image download, and do not obscure article text.
+The home page pairs an editorial serif heading with a locally served Cassini photo of Saturn. The layout adapts from desktop sidebar navigation to a mobile bottom bar. Photo credit goes to NASA/JPL-Caltech/Space Science Institute. [So Far from Home](https://science.nasa.gov/photojournal/so-far-from-home/)
 
 ## Data sources
 

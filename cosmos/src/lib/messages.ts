@@ -9,8 +9,7 @@ const en = {
     images: "Images",
     settings: "Settings",
     label: "Main navigation",
-    motto: "Stay curious.",
-    sources: "Sources: NASA & JAXA official feeds.",
+    sources: "NASA & JAXA official feeds.",
     independent: "Not affiliated with either agency."
   },
   meta: {
@@ -31,27 +30,22 @@ const en = {
     exploring: "Exploring the cosmos"
   },
   hero: {
-    coordinate: "BEYOND THE KNOWN",
-    explore: "+ EXPLORE",
     journal: "Independent space journal",
-    edition: "EARTH / OUR POINT OF DEPARTURE",
-    kicker: "For the endlessly curious",
-    title: "GO BEYOND.",
-    titleSecond: "STAY CURIOUS.",
-    description: "A small window into an infinite universe.",
-    descriptionSecond: "Discover the missions, ideas, and moments",
-    descriptionThird: "taking us further.",
+    title: "Go beyond.",
+    titleSecond: "Stay curious.",
+    description: "Follow missions, launches, and discoveries from NASA and JAXA.",
     start: "Start exploring",
-    latest: "The latest dispatches",
+    latest: "Featured stories",
+    photoAlt: "Sunlight illuminates Saturn and its rings in a photo from Cassini.",
+    photoCaption: "Saturn photographed by Cassini",
     destinations: {
-      missions: { label: "Follow the missions", detail: "Human ambition. Cosmic scale." },
-      upcoming: { label: "Catch the next launch", detail: "The countdown to what comes next." },
-      images: { label: "See the extraordinary", detail: "The universe, through a different lens." }
+      missions: "Explore missions",
+      upcoming: "Launch schedule",
+      images: "Space gallery"
     }
   },
   home: {
     dispatches: "Dispatches from NASA & JAXA",
-    dispatch: "The dispatch",
     stories: "Stories from beyond Earth",
     feedsUnavailable: "Couldn’t load NASA and JAXA news",
     checkBack: "Official feeds are temporarily unreachable. Please check back shortly.",
@@ -217,7 +211,6 @@ const ja: typeof en = {
     images: "画像",
     settings: "設定",
     label: "メインメニュー",
-    motto: "好奇心のままに。",
     sources: "情報源はNASAとJAXAの公式フィードです。",
     independent: "COSMOSは独立したアプリです。"
   },
@@ -239,27 +232,22 @@ const ja: typeof en = {
     exploring: "宇宙の情報を読み込み中"
   },
   hero: {
-    coordinate: "未知のその先へ",
-    explore: "+ 探索",
     journal: "独立系の宇宙ジャーナル",
-    edition: "地球 / 探索の出発点",
-    kicker: "宇宙に好奇心を抱くすべての人へ",
     title: "地球の先へ。",
     titleSecond: "好奇心のままに。",
-    description: "無限に広がる宇宙をのぞいてみませんか。",
-    descriptionSecond: "宇宙への理解を広げるミッション、",
-    descriptionThird: "発見、その瞬間を追いかけよう。",
+    description: "NASAとJAXAのミッション、打ち上げ予定、宇宙の発見を追いかけよう。",
     start: "探索を始める",
-    latest: "最新の特集を見る",
+    latest: "特集を見る",
+    photoAlt: "太陽の光を浴びる土星と環。探査機カッシーニが撮影。",
+    photoCaption: "カッシーニが撮影した土星",
     destinations: {
-      missions: { label: "ミッションを追う", detail: "人類の挑戦が宇宙へ広がる。" },
-      upcoming: { label: "次の打ち上げを確認", detail: "打ち上げまでのカウントダウン。" },
-      images: { label: "宇宙の画像を見る", detail: "いつもと違う視点から宇宙を眺める。" }
+      missions: "ミッション",
+      upcoming: "打ち上げ予定",
+      images: "宇宙の画像"
     }
   },
   home: {
     dispatches: "NASAとJAXAの最新情報",
-    dispatch: "特集",
     stories: "地球のその先から届くニュース",
     feedsUnavailable: "NASAとJAXAの最新情報を取得できませんでした",
     checkBack: "現在、公式フィードに接続できません。しばらくしてからもう一度お試しください。",
