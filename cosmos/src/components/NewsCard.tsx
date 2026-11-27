@@ -1,14 +1,13 @@
 import Link from "next/link";
 import Image from "next/image";
 import { relativeTime } from "@/lib/format";
-import { previewText } from "@/lib/text";
+import NewsText from "@/components/NewsText";
 import ArticlePlaceholder from "@/components/ArticlePlaceholder";
 import { getLocalization } from "@/lib/localization";
 import type { NewsItem } from "@/types/cosmos";
 
 export default function NewsCard({ item }: { item: NewsItem }) {
   const { locale, copy } = getLocalization();
-  const excerpt = item.excerptNotice ? copy.news[item.excerptNotice] : item.summary;
 
   return (
     <Link
@@ -35,9 +34,9 @@ export default function NewsCard({ item }: { item: NewsItem }) {
           <span className="text-cosmos-muted">{copy.category[item.category]}</span>
         </div>
         <h3 className="mt-1.5 font-display text-[15px] leading-snug text-white group-hover:text-cosmos-ice transition-colors line-clamp-2">
-          {item.title}
+          <NewsText item={item} field="title" />
         </h3>
-        <p className="mt-1 text-sm text-cosmos-muted">{previewText(excerpt, 160)}</p>
+        <p className="mt-1 text-sm text-cosmos-muted"><NewsText item={item} field="summary" previewLength={160} /></p>
         <p className="mt-1.5 text-xs text-cosmos-muted/70">{relativeTime(item.publishedAt, locale)}</p>
       </div>
     </Link>

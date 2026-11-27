@@ -81,7 +81,11 @@ const en = {
     japaneseOnly: "This is a Japanese-language press release with no separate English-language article. See the official source for details.",
     publishedVia: (feed: string, source: string) =>
       "Published via " + feed + ". COSMOS shows a short excerpt. Read the full article on " + source + "’s own site.",
-    readArticle: "Read official article"
+    readArticle: "Read official article",
+    showOriginal: "Show original headline and excerpt",
+    machineTranslation: "Machine translation",
+    readJapanese: "Read the full article in Japanese",
+    readGoogleTranslation: "Read in Japanese via Google Translate"
   },
   missions: {
     title: "Active & upcoming",
@@ -134,7 +138,7 @@ const en = {
   settings: {
     language: "Display language",
     about: "About COSMOS",
-    description: "COSMOS aggregates real-time public information directly from NASA and JAXA’s official feeds and APIs. Titles, source excerpts, dates, and links come from the original source. On article pages, you can generate an AI brief in your display language from the available source text. AI briefs are labeled and may contain mistakes. Every article links to its official source.",
+    description: "COSMOS aggregates real-time public information directly from NASA and JAXA’s official feeds and APIs. News headlines and excerpts are translated for Japanese display. Each article includes a link to the original source. On article pages, you can generate an AI brief in your display language from the available source text. AI briefs are labeled and may contain mistakes.",
     sources: "Data sources",
     visit: "Visit",
     independence: "COSMOS is an independent, unofficial app. It is not produced, endorsed, or affiliated with NASA or JAXA. NASA content is generally not copyrighted in the United States. JAXA press materials remain subject to JAXA’s own usage policies. Always confirm mission-critical or time-critical details on the agencies’ own sites."
@@ -285,7 +289,11 @@ const ja: typeof en = {
     japaneseOnly: "このプレスリリースは日本語で公開されています。詳しくは公式記事をご覧ください。",
     publishedVia: (feed: string, source: string) =>
       feed + "で配信された記事です。全文は" + source + "の公式サイトでご覧いただけます。",
-    readArticle: "公式記事を読む"
+    readArticle: "公式記事を読む",
+    showOriginal: "見出しと抜粋の原文を表示",
+    machineTranslation: "機械翻訳",
+    readJapanese: "全文を日本語で読む",
+    readGoogleTranslation: "全文を日本語で読む（Google 翻訳）"
   },
   missions: {
     title: "進行中・今後のミッション",
@@ -338,7 +346,7 @@ const ja: typeof en = {
   settings: {
     language: "表示言語",
     about: "COSMOSについて",
-    description: "COSMOSは、NASAとJAXAの公式フィードやAPIから最新の公開情報を集めています。記事の見出し、抜粋、日付、リンクは公式情報に基づきます。記事ページでは、公式情報をもとに選択した言語でAI要約を生成できます。要約にはAIで生成したことを表示します。内容に誤りが含まれる場合は、各記事の公式リンクから確認できます。",
+    description: "COSMOSは、NASAとJAXAの公式フィードやAPIから最新の公開情報を集めています。日本語表示では、記事の見出しと抜粋を日本語で読めます。記事ページでは、公式情報をもとに選択した言語でAI要約を生成できます。要約にはAIで生成したことを表示します。内容に誤りが含まれる場合は、各記事の公式リンクから確認できます。",
     sources: "情報源",
     visit: "開く",
     independence: "COSMOSはNASAやJAXAから独立した非公式アプリです。NASAのコンテンツは米国では一般に著作権の対象外ですが、JAXAの報道資料にはJAXAの利用条件が適用されます。重要な日時やミッションの詳細は各機関の公式サイトでご確認ください。"

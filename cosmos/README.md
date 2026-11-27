@@ -16,7 +16,7 @@ On PowerShell, use `Copy-Item .env.example .env.local` for the copy step.
 
 ## Display language
 
-Choose **English** or **日本語** under **Settings → Display language**. COSMOS remembers the choice in the same browser. Site controls, mission profiles, dates, and AI briefs use the selected language. Official feed titles and excerpts appear as published.
+Choose **English** or **日本語** under **Settings → Display language**. COSMOS remembers the choice in the same browser. Site controls, mission profiles, dates, and AI briefs use the selected language. In Japanese mode, news headlines and excerpts use the official Japanese JAXA feed when a matching release exists. Other English text is translated by the Firefox Translations model via Bergamot. The model runs on the server and needs no API key. Article pages include the original text and a link to the full Japanese article or a Google Translate view of the official page.
 
 ## AI summaries
 
@@ -44,13 +44,15 @@ The app uses a deep-space star field, an illustrated planetary horizon, orbit de
 ## Data sources
 
 - NASA news: `https://www.nasa.gov/news-release/feed/`, `https://www.nasa.gov/feed/`, Artemis and station feeds.
-- JAXA news: `https://global.jaxa.jp/rss/press.rdf`. Incomplete descriptions can be enriched from official article pages.
+- JAXA news: `https://global.jaxa.jp/rss/press.rdf` and `https://www.jaxa.jp/rss/press_j.rdf` for matching Japanese releases. Incomplete descriptions can be enriched from official article pages.
 - NASA APOD: `https://api.nasa.gov/planetary/apod` (`NASA_API_KEY` optional).
 - NASA Image Library: `https://images-api.nasa.gov/search`.
 - Launch Library 2: `https://ll.thespacedevs.com/2.2.0/launch/upcoming/` (`LAUNCH_LIBRARY_API_KEY` optional).
 - Mission profiles are curated reference information; consult linked official pages for current status.
 
 `/api/health` reports upstream feed health. Source failures show a notice and can fall back to process-local last-known-good data.
+
+Article translation uses [Bergamot Translator](https://github.com/browsermt/bergamot-translator) (MPL-2.0) and the [Firefox Translations](https://mozilla.github.io/translations/firefox-models/) English-to-Japanese model. The server verifies the model files and caches successful translations.
 
 ## Checks
 

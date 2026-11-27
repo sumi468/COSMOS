@@ -164,7 +164,7 @@ export function ogImage(html: string | undefined): string | undefined {
   return undefined;
 }
 
-const SENTENCE_END = /[。！？.!?]["'\u201d\u2019]?\s/;
+const SENTENCE_END = /[。！？]|[.!?](?=["'\u201d\u2019]?\s)/;
 
 /**
  * Trims text to at most `maxChars`, cutting only at a sentence boundary if

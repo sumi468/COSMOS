@@ -2,14 +2,13 @@ import Link from "next/link";
 import Image from "next/image";
 import { relativeTime } from "@/lib/format";
 import { getLocalization } from "@/lib/localization";
-import { previewText } from "@/lib/text";
+import NewsText from "@/components/NewsText";
 import type { NewsItem } from "@/types/cosmos";
 
 export default function FeaturedNews({ items }: { items: NewsItem[] }) {
   if (items.length === 0) return null;
   const { locale, copy } = getLocalization();
   const [lead, ...rest] = items;
-  const excerpt = lead.excerptNotice ? copy.news[lead.excerptNotice] : lead.summary;
   const secondary = rest.slice(0, 2);
 
   return (
@@ -35,9 +34,9 @@ export default function FeaturedNews({ items }: { items: NewsItem[] }) {
             {lead.source} &middot; {copy.category[lead.category]}
           </div>
           <h2 className="mt-2.5 font-display text-2xl md:text-3xl leading-[1.15] text-white group-hover:text-cosmos-ice transition-colors">
-            {lead.title}
+            <NewsText item={lead} field="title" />
           </h2>
-          <p className="mt-3 text-[15px] text-cosmos-muted max-w-xl">{previewText(excerpt, 170)}</p>
+          <p className="mt-3 text-[15px] text-cosmos-muted max-w-xl"><NewsText item={lead} field="summary" previewLength={170} /></p>
           <p className="mt-3 text-xs text-cosmos-muted/70">{relativeTime(lead.publishedAt, locale)}</p>
         </div>
       </Link>
@@ -60,7 +59,7 @@ export default function FeaturedNews({ items }: { items: NewsItem[] }) {
               <div className="min-w-0 flex-1">
                 <div className="eyebrow text-cosmos-ice/80">{item.source}</div>
                 <h3 className="mt-1 font-display text-[15px] leading-snug text-white group-hover:text-cosmos-ice transition-colors line-clamp-2">
-                  {item.title}
+                  <NewsText item={item} field="title" />
                 </h3>
                 <p className="mt-1.5 text-xs text-cosmos-muted/70">{relativeTime(item.publishedAt, locale)}</p>
               </div>

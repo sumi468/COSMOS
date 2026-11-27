@@ -3,7 +3,8 @@ import SearchBar from "@/components/SearchBar";
 import NewsCard from "@/components/NewsCard";
 import MissionCard from "@/components/MissionCard";
 import { EmptyState } from "@/components/EmptyState";
-import { getAllNews, filterNews } from "@/lib/news";
+import { getAllNews } from "@/lib/news";
+import { filterLocalizedNews } from "@/lib/japaneseNews";
 import { MISSIONS } from "@/lib/missions";
 import { getLocalization } from "@/lib/localization";
 
@@ -13,10 +14,9 @@ export function generateMetadata() {
 }
 
 export default async function SearchPage({ searchParams }: { searchParams: { q?: string } }) {
-  const { copy } = getLocalization();
+  const { locale, copy } = getLocalization();
   const query = searchParams.q?.trim();
-  const news = await getAllNews();
-  const newsResults = query ? filterNews(news.items, { query }) : [];
+  const newsResults = query ? await filterLocalizedNews((await getAllNews()).items, { query }, locale) : [];
   const missionResults = query
     ? MISSIONS.filter((m) => `${m.name} ${m.description} ${m.ja.name} ${m.ja.description}`.toLowerCase().includes(query.toLowerCase()))
     : [];

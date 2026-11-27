@@ -4,7 +4,8 @@ import FilterBar from "@/components/FilterBar";
 import SearchBar from "@/components/SearchBar";
 import UpdatedBadge from "@/components/UpdatedBadge";
 import { SourceErrorNotice, EmptyState } from "@/components/EmptyState";
-import { getAllNews, filterNews } from "@/lib/news";
+import { getAllNews } from "@/lib/news";
+import { filterLocalizedNews } from "@/lib/japaneseNews";
 import { getLocalization } from "@/lib/localization";
 import type { Agency, NewsCategory } from "@/types/cosmos";
 
@@ -19,13 +20,13 @@ export default async function LatestPage({
 }: {
   searchParams: { source?: string; category?: string; q?: string };
 }) {
-  const { copy } = getLocalization();
+  const { locale, copy } = getLocalization();
   const news = await getAllNews();
   const source = (searchParams.source as Agency) || "ALL";
   const category = (searchParams.category as NewsCategory) || "ALL";
   const query = searchParams.q?.trim();
 
-  const filtered = filterNews(news.items, { source, category, query });
+  const filtered = await filterLocalizedNews(news.items, { source, category, query }, locale);
 
   return (
     <PageShell>
