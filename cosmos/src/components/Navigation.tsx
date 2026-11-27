@@ -25,10 +25,10 @@ export default function Navigation() {
   return (
     <>
       {/* Desktop sidebar */}
-      <aside className="space-sidebar hidden md:flex md:flex-col md:w-56 md:shrink-0 md:border-r md:border-cosmos-line md:h-screen md:sticky md:top-0 md:py-8 md:px-5">
-        <Link href="/" className="flex items-center gap-2 px-2 mb-10">
+      <aside className="space-sidebar hidden md:flex md:flex-col md:w-48 lg:w-52 md:shrink-0 md:border-r md:border-cosmos-line md:sticky md:top-0 md:overflow-y-auto md:py-7 md:px-4">
+        <Link href="/" className="space-brand flex items-center gap-2.5 px-2 mb-8">
           <span className="cosmos-mark" aria-hidden="true">✦</span>
-          <span className="font-display text-lg tracking-[0.18em]">COSMOS</span>
+          <span className="font-display text-sm font-semibold tracking-[0.24em]">COSMOS</span>
         </Link>
         <nav aria-label={copy.nav.label} className="flex flex-col gap-1">
           {ITEMS.map(({ href, label, icon: Icon }) => {
@@ -50,19 +50,19 @@ export default function Navigation() {
             );
           })}
         </nav>
-        <div className="mt-auto px-2 pt-8 text-xs text-cosmos-muted leading-relaxed">
-          <div className="sidebar-orbit" aria-hidden="true" />
-          <p className="eyebrow text-cosmos-ice mb-3">{copy.nav.motto}</p>
-          {copy.nav.sources}
-          <br />
-          {copy.nav.independent}
+        <div className="mt-auto pt-8">
+          <p className="sidebar-sources px-2 pt-4 text-xs leading-relaxed text-cosmos-muted">
+            {copy.nav.sources}
+            <br />
+            {copy.nav.independent}
+          </p>
         </div>
       </aside>
 
       {/* Mobile bottom tab bar */}
       <nav
         aria-label={copy.nav.label}
-        className="md:hidden fixed bottom-0 inset-x-0 z-40 border-t border-cosmos-line bg-cosmos-black/95 backdrop-blur supports-[backdrop-filter]:bg-cosmos-black/80"
+        className="space-mobile-nav md:hidden fixed bottom-0 inset-x-0 z-40 border-t border-cosmos-line bg-cosmos-black/95 backdrop-blur supports-[backdrop-filter]:bg-cosmos-black/80"
         style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
       >
         <div className="grid grid-cols-6">
@@ -73,7 +73,7 @@ export default function Navigation() {
                 key={href}
                 href={href}
                 aria-current={active ? "page" : undefined}
-                className={`nav-link flex flex-col items-center justify-center gap-1 py-2.5 text-[10px] ${
+                className={`nav-link flex flex-col items-center justify-start gap-1 py-2.5 text-center text-[10px] ${
                   active ? "text-cosmos-ice" : "text-cosmos-muted"
                 }`}
               >
@@ -89,7 +89,7 @@ export default function Navigation() {
 }
 
 type IconProps = { active?: boolean };
-const strokeFor = (active?: boolean) => (active ? "#AEE3F5" : "currentColor");
+const strokeFor = (active?: boolean) => (active ? "#EBC797" : "currentColor");
 
 function HomeIcon({ active }: IconProps) {
   return (

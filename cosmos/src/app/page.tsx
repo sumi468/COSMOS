@@ -26,15 +26,13 @@ export default async function HomePage() {
   return (
     <PageShell>
       <SpaceHero />
-      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-cosmos-line pb-5">
-        <p className="eyebrow text-cosmos-muted">{copy.home.dispatches}</p>
-        <UpdatedBadge updatedAt={news.updatedAt} stale={news.stale} />
-      </div>
-
-      <SourceErrorNotice errors={news.errors} />
-
-      <section id="dispatches" className="mt-8">
-        <SectionHeading eyebrow={copy.home.dispatch} title={copy.home.stories} />
+      <section id="dispatches">
+        <SectionHeading
+          eyebrow={copy.home.dispatches}
+          title={copy.home.stories}
+          action={<UpdatedBadge updatedAt={news.updatedAt} stale={news.stale} />}
+        />
+        <SourceErrorNotice errors={news.errors} />
         {featured.length > 0 ? (
           <FeaturedNews items={featured} />
         ) : (
