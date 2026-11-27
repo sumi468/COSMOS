@@ -1,12 +1,10 @@
 import { cache } from "react";
-import { fetchCache } from "@/lib/fetchPolicy";
-import { fetchFeed, type FeedEntry } from "@/lib/rss";
+import { fetchJapaneseJaxaFeed } from "@/lib/jaxa";
+import type { FeedEntry } from "@/lib/rss";
 import { filterNews, type NewsFilters } from "@/lib/news";
 import type { Locale } from "@/lib/language";
 import { translateJapanese } from "@/lib/translateJapanese";
 import type { NewsItem } from "@/types/cosmos";
-
-const JAXA_JAPANESE_FEED = "https://www.jaxa.jp/rss/press_j.rdf";
 
 export type NewsTextField = "title" | "summary";
 
@@ -27,7 +25,7 @@ function jaxaReleaseId(link: string): string | undefined {
 
 const japaneseJaxaFeed = cache(async () => {
   try {
-    const items = await fetchFeed(JAXA_JAPANESE_FEED, fetchCache(900));
+    const items = await fetchJapaneseJaxaFeed();
     return new Map(items.flatMap((entry) => {
       const id = jaxaReleaseId(entry.link);
       return id && entry.title ? [[id, entry] as const] : [];

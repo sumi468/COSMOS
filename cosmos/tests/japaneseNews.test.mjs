@@ -5,8 +5,7 @@ import ts from "typescript";
 
 const source = (await readFile(new URL("../src/lib/japaneseNews.ts", import.meta.url), "utf8"))
   .replace('import { cache } from "react";', 'const cache = (fn) => fn;')
-  .replace('import { fetchCache } from "@/lib/fetchPolicy";', 'const fetchCache = () => ({});')
-  .replace('import { fetchFeed, type FeedEntry } from "@/lib/rss";', `const fetchFeed = async () => [{
+  .replace('import { fetchJapaneseJaxaFeed } from "@/lib/jaxa";', `const fetchJapaneseJaxaFeed = async () => [{
     title: "月探査機の運用を開始",
     description: "月探査機による観測を開始しました。",
     link: "https://www.jaxa.jp/press/2026/11/20261127-1_j.html"
