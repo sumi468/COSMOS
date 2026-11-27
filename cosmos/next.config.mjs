@@ -5,6 +5,19 @@ const nextConfig = {
     // `npm run lint` so a first-time ESLint config prompt never blocks CI.
     ignoreDuringBuilds: true
   },
+  experimental: {
+    // The Node worker loads Bergamot and its WASM files outside the JS bundle.
+    outputFileTracingIncludes: Object.fromEntries(
+      ["/", "/latest", "/search", "/news/*", "/missions/*"].map((route) => [
+        route,
+        [
+          "./src/lib/translationWorker.mjs",
+          "./node_modules/@browsermt/bergamot-translator/package.json",
+          "./node_modules/@browsermt/bergamot-translator/worker/**/*"
+        ]
+      ])
+    )
+  },
   images: {
     remotePatterns: [
       // NASA article body images (content:encoded), verified via a live fetch
