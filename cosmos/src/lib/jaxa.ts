@@ -10,7 +10,7 @@ import type { FetchResult, NewsItem, SourceFetchError } from "@/types/cosmos";
 // JAXA's official English press release RSS (RDF/RSS 1.0), linked directly
 // from JAXA's own "For Media" page (https://global.jaxa.jp/media.html →
 // "You can find official JAXA press releases here and also RSS them.").
-// This is the only JAXA feed COSMOS uses — no scraping of listing pages.
+// This feed defines the English release catalog. The Japanese feed below supplies matching localized text.
 const JAXA_FEEDS: Array<{ name: string; url: string }> = [
   { name: "JAXA Press Release (English)", url: "https://global.jaxa.jp/rss/press.rdf" }
 ];
@@ -38,6 +38,19 @@ const JAXA_FEED_HEADERS: Record<string, string> = {
   Accept: "application/rss+xml, application/xml, text/xml, */*",
   "Accept-Language": "en-US,en;q=0.9,ja;q=0.8"
 };
+
+// JAXA can return a status-200 HTML page to the default feed client. Use
+// the same request headers as the English feed and ask for Japanese RDF.
+export function fetchJapaneseJaxaFeed() {
+  return fetchFeed("https://www.jaxa.jp/rss/press_j.rdf", {
+    ...fetchCache(REVALIDATE_SECONDS),
+    headers: {
+      ...JAXA_FEED_HEADERS,
+      Accept: "application/rss+xml, application/rdf+xml, application/xml, text/xml, */*",
+      "Accept-Language": "ja,en;q=0.9"
+    }
+  });
+}
 
 /**
  * JAXA's own RSS `description` is frequently one of:
