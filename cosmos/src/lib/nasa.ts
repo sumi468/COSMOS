@@ -132,11 +132,17 @@ export async function getApod(): Promise<{ image: SpaceImage | null; stale: bool
 // served from images-assets.nasa.gov (see next.config.mjs).
 const GALLERY_CACHE_KEY = "nasa-gallery";
 
+interface GalleryCache {
+  query: string;
+  limit: number;
+  images: SpaceImage[];
+}
+
 export async function searchNasaImages(query: string, limit = 12): Promise<{ images: SpaceImage[]; error?: string }> {
   try {
     const res = await fetch(
       `https://images-api.nasa.gov/search?q=${encodeURIComponent(query)}&media_type=image`,
-      fetchCache(3600)
+      { ...fetchCache(3600), signal: AbortSignal.timeout(8_000) }
     );
     if (!res.ok) throw new Error(`HTTP ${res.status} ${res.statusText}`);
     const data = await res.json();
@@ -160,7 +166,7 @@ export async function searchNasaImages(query: string, limit = 12): Promise<{ ima
       };
     });
     const withImages = images.filter((img) => img.imageUrl);
-    if (withImages.length > 0) setLastGood(GALLERY_CACHE_KEY, withImages);
+    if (withImages.length > 0) setLastGood<GalleryCache>(GALLERY_CACHE_KEY, { query, limit, images: withImages });
     return { images: withImages };
   } catch (err) {
     const message = err instanceof Error ? err.message : String(err);
@@ -168,7 +174,8 @@ export async function searchNasaImages(query: string, limit = 12): Promise<{ ima
       // eslint-disable-next-line no-console
       console.log("[COSMOS] NASA Image Library fetch failed:", message);
     }
-    const fallback = getLastGood<SpaceImage[]>(GALLERY_CACHE_KEY);
-    return { images: fallback?.value ?? [], error: "NASA画像ライブラリを取得できませんでした" };
+    const fallback = getLastGood<GalleryCache>(GALLERY_CACHE_KEY)?.value;
+    const images = fallback?.query === query && fallback.limit === limit ? fallback.images : [];
+    return { images, error: "NASA画像ライブラリを取得できませんでした" };
   }
 }

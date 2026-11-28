@@ -27,8 +27,7 @@ const en = {
     organization: "Organization",
     status: "Status",
     target: "Target",
-    loading: "Loading page",
-    exploring: "Exploring the cosmos"
+    loading: "Loading…"
   },
   hero: {
     journal: "Independent space journal",
@@ -231,8 +230,7 @@ const ja: typeof en = {
     organization: "機関",
     status: "ステータス",
     target: "目的地",
-    loading: "ページを読み込み中",
-    exploring: "宇宙の情報を読み込み中"
+    loading: "読み込み中…"
   },
   hero: {
     journal: "独立系の宇宙ジャーナル",

@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import CosmosMark from "@/components/CosmosMark";
 import { usePathname } from "next/navigation";
 import { useLanguage } from "@/components/LanguageProvider";
 
@@ -27,8 +28,8 @@ export default function Navigation() {
       {/* Desktop sidebar */}
       <aside className="space-sidebar hidden md:flex md:flex-col md:w-48 lg:w-52 md:shrink-0 md:border-r md:border-cosmos-line md:sticky md:top-0 md:overflow-y-auto md:py-7 md:px-4">
         <Link href="/" className="space-brand flex items-center gap-2.5 px-2 mb-7">
-          <span className="cosmos-mark" aria-hidden="true">✦</span>
-          <span className="font-display text-sm font-semibold tracking-[0.24em]">COSMOS</span>
+          <CosmosMark />
+          <span className="cosmos-wordmark">COSMOS</span>
         </Link>
         <nav aria-label={copy.nav.label} className="flex flex-col gap-1">
           {ITEMS.map(({ href, label, icon: Icon }) => {
@@ -78,7 +79,7 @@ export default function Navigation() {
                   active ? "text-cosmos-accent" : "text-cosmos-muted"
                 }`}
               >
-                <Icon />
+                {label === "home" ? <CosmosMark /> : <Icon />}
                 {label === "latest" ? copy.nav.latestShort : copy.nav[label]}
               </Link>
             );

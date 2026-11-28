@@ -65,8 +65,117 @@ body::before {
 }
 
 .cosmos-mark {
+  --mark-size: 1.85rem;
+  position: relative;
+  display: inline-block;
+  flex: none;
+  width: var(--mark-size);
+  height: var(--mark-size);
   color: rgb(var(--cosmos-accent));
-  font-size: 24px;
+}
+
+.cosmos-mark::before,
+.cosmos-mark::after {
+  content: "";
+  position: absolute;
+}
+
+.cosmos-mark::before {
+  inset: 32% 1%;
+  transform: rotate(-32deg);
+  border: max(1px, calc(var(--mark-size) * .054)) solid currentColor;
+  border-radius: 50%;
+}
+
+.cosmos-mark::after {
+  inset: 10% 22%;
+  background: currentColor;
+  clip-path: polygon(50% 0%, 58% 33%, 72% 43%, 100% 50%, 72% 57%, 58% 67%, 50% 100%, 42% 67%, 28% 57%, 0% 50%, 28% 43%, 42% 33%);
+}
+
+.cosmos-mark-satellite {
+  position: absolute;
+  inset: 17% 10.5% auto auto;
+  width: 9%;
+  height: 9%;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.cosmos-wordmark {
+  font-family: var(--font-display), system-ui, sans-serif;
+  font-size: .875rem;
+  font-weight: 700;
+  letter-spacing: .24em;
+}
+
+.space-mobile-nav .cosmos-mark {
+  --mark-size: 18px;
+  color: currentColor;
+}
+
+.cosmos-loading {
+  display: grid;
+  min-height: min(65svh, 32rem);
+  place-content: center;
+  justify-items: center;
+  gap: .75rem;
+  padding: 1.25rem;
+  text-align: center;
+}
+
+.loading-orbit {
+  position: relative;
+  display: grid;
+  width: 6.25rem;
+  height: 6.25rem;
+  place-items: center;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgb(var(--cosmos-accent) / .12), transparent 72%);
+}
+
+.loading-orbit::before {
+  content: "";
+  position: absolute;
+  inset: .25rem;
+  border: 1px solid rgb(var(--cosmos-line));
+  border-top-color: rgb(var(--cosmos-accent));
+  border-radius: 50%;
+  animation: loading-orbit 2.4s linear infinite;
+}
+
+.loading-orbit .cosmos-mark {
+  --mark-size: 3.6rem;
+}
+
+.cosmos-loading .cosmos-wordmark {
+  font-size: 1.1rem;
+}
+
+.loading-caption {
+  color: rgb(var(--cosmos-muted));
+  font-size: .8125rem;
+}
+
+.cosmos-loading-compact {
+  min-height: 9.5rem;
+  gap: .5rem;
+  border: 1px solid rgb(var(--cosmos-line));
+  border-radius: 1rem;
+  background: rgb(var(--cosmos-surface));
+}
+
+.cosmos-loading-compact .loading-orbit {
+  width: 3.75rem;
+  height: 3.75rem;
+}
+
+.cosmos-loading-compact .cosmos-mark {
+  --mark-size: 2rem;
+}
+
+@keyframes loading-orbit {
+  to { transform: rotate(360deg); }
 }
 
 .nav-active {
@@ -378,7 +487,7 @@ body::before {
   inset: 0 -13% 0 33%;
   pointer-events: none;
   mix-blend-mode: screen;
-  animation: photo-arrival 2400ms var(--motion-ease) both;
+  animation: photo-arrival 640ms var(--motion-ease) both;
 }
 
 .hero-picture img {
@@ -792,24 +901,24 @@ summary:focus-visible {
 /* Lingering movement with immediate press feedback. */
 :root { --motion-ease: cubic-bezier(.2, .7, .2, 1); }
 .motion-card, .motion-control {
-  transition: transform 650ms var(--motion-ease), background-color 450ms ease, border-color 450ms ease, color 450ms ease;
+  transition: transform 300ms var(--motion-ease), background-color 220ms ease, border-color 220ms ease, color 220ms ease;
 }
 .motion-card, .motion-control, .nav-link {
   -webkit-tap-highlight-color: rgb(var(--cosmos-accent) / .12);
 }
-.nav-link svg, .action-arrow { transition: transform 650ms var(--motion-ease); }
+.nav-link svg, .action-arrow { transition: transform 300ms var(--motion-ease); }
 .action-arrow { display: inline-block; margin-left: 3px; }
 .nav-link[aria-current="page"] svg { transform: translateY(-1px); }
 .motion-card:focus-visible { border-color: rgb(var(--cosmos-accent) / .5); }
 .image-card { transition: border-color 450ms ease; }
-.image-card img { transition: transform 1100ms var(--motion-ease); }
+.image-card img { transition: transform 520ms var(--motion-ease); }
 input[type="search"] { transition: border-color 160ms ease, background-color 160ms ease; }
 input[type="search"]:focus { background-color: rgb(var(--cosmos-surface)); }
 .ai-summary button { transition: transform 160ms var(--motion-ease), background-color 160ms ease; }
 
 @media (hover: hover) and (pointer: fine) {
-  a.motion-card:hover { transform: translateY(-8px); }
-  a.news-row:hover { transform: translateX(8px); }
+  a.motion-card:hover { transform: translateY(-4px); }
+  a.news-row:hover { transform: translateX(3px); }
   .motion-control:hover { transform: translateY(-2px); }
   .motion-control:hover .action-arrow { transform: translate(2px, -2px); }
   .nav-link:hover svg { transform: translateY(-2px); }
@@ -821,15 +930,13 @@ a.motion-card:active, .motion-control:active, .ai-summary button:not(:disabled):
 }
 .nav-link:active svg { transform: scale(.88); }
 
-.hero-copy > * { animation: arrive 1700ms var(--motion-ease) both; }
-.hero-copy > :nth-child(2) { animation-delay: 100ms; }
-.hero-copy > :nth-child(3) { animation-delay: 220ms; }
-.hero-copy > :nth-child(4) { animation-delay: 340ms; }
+.hero-copy > * { animation: arrive 460ms var(--motion-ease) both; }
+.hero-copy > :nth-child(2) { animation-delay: 40ms; }
+.hero-copy > :nth-child(3) { animation-delay: 80ms; }
+.hero-copy > :nth-child(4) { animation-delay: 120ms; }
 
-.loading-placeholder { background: rgb(var(--cosmos-inset)); animation: loading-breathe 1.6s ease-in-out infinite; }
-.loading-beacon { width: 8px; height: 8px; border-radius: 50%; background: rgb(var(--cosmos-accent)); animation: loading-breathe 1.6s ease-in-out infinite; }
 @keyframes photo-arrival {
-  from { opacity: .35; translate: 18px 0; }
+  from { opacity: .84; translate: 6px 0; }
   to { opacity: 1; translate: 0 0; }
 }
 
@@ -839,11 +946,9 @@ a.motion-card:active, .motion-control:active, .ai-summary button:not(:disabled):
 }
 
 @keyframes arrive {
-  from { opacity: .45; translate: 0 16px; }
+  from { opacity: .82; translate: 0 7px; }
   to { opacity: 1; translate: 0 0; }
 }
-
-@keyframes loading-breathe { 0%, 100% { opacity: .45; } 50% { opacity: .85; } }
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {

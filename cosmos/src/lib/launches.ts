@@ -34,7 +34,7 @@ async function fetchLaunches(agencySearch: string): Promise<any[]> {
   const headers: Record<string, string> = {};
   if (key) headers.Authorization = `Token ${key}`;
   const url = `${BASE_URL}/launch/upcoming/?search=${encodeURIComponent(agencySearch)}&limit=15&mode=normal`;
-  const res = await fetch(url, { headers, ...fetchCache(REVALIDATE_SECONDS) });
+  const res = await fetch(url, { headers, ...fetchCache(REVALIDATE_SECONDS), signal: AbortSignal.timeout(8_000) });
   if (!res.ok) throw new Error(`Launch Library responded ${res.status}`);
   const data = await res.json();
   return data?.results ?? [];

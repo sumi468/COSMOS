@@ -34,8 +34,8 @@ export default function MotionSurface({ children }: { children: ReactNode }) {
         observer.unobserve(entry.target);
         if (preference.matches || document.hidden || typeof entry.target.animate !== "function") return;
         const animation = entry.target.animate(
-          [{ opacity: 0.2, translate: "0 36px" }, { opacity: 1, translate: "0 0" }],
-          { duration: 1400, delay: Math.min(order++ * 140, 420), easing: "cubic-bezier(.2,.7,.2,1)" }
+          [{ opacity: 0.75, translate: "0 10px" }, { opacity: 1, translate: "0 0" }],
+          { duration: 420, delay: Math.min(order++ * 50, 150), easing: "cubic-bezier(.2,.7,.2,1)" }
         );
         animations.add(animation);
         animation.onfinish = () => animations.delete(animation);
