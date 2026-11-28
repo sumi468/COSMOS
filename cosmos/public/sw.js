@@ -1,6 +1,6 @@
 // Minimal service worker: app-shell caching so COSMOS still opens offline,
 // while always going to the network first for data so news stays fresh.
-const CACHE_NAME = "cosmos-shell-v1";
+const CACHE_NAME = "cosmos-shell-v2";
 const SHELL_ASSETS = ["/", "/manifest.json", "/icons/icon-192.png"];
 
 self.addEventListener("install", (event) => {

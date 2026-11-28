@@ -4,8 +4,8 @@
   "description": "NASA & JAXA news, missions, launches, and space imagery in one place.",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#05070B",
-  "theme_color": "#05070B",
+  "background_color": "#09090e",
+  "theme_color": "#09090e",
   "orientation": "portrait-primary",
   "icons": [
     {

@@ -1,3 +1,5 @@
+import { Suspense } from "react";
+import LoadingState from "@/components/LoadingState";
 import PageShell, { SectionHeading } from "@/components/PageShell";
 import EventCard from "@/components/EventCard";
 import UpdatedBadge from "@/components/UpdatedBadge";
@@ -10,12 +12,29 @@ export function generateMetadata() {
   return { title: getLocalization().copy.nav.upcoming };
 }
 
-export default async function UpcomingPage() {
+export default function UpcomingPage() {
+  const { copy } = getLocalization();
+
+  return (
+    <PageShell>
+      <Suspense fallback={
+        <>
+          <SectionHeading as="h1" eyebrow={copy.nav.upcoming} title={copy.upcoming.title} />
+          <LoadingState compact />
+        </>
+      }>
+        <UpcomingSchedule />
+      </Suspense>
+    </PageShell>
+  );
+}
+
+async function UpcomingSchedule() {
   const { copy } = getLocalization();
   const events = await getUpcomingEvents();
 
   return (
-    <PageShell>
+    <>
       <SectionHeading
         as="h1"
         eyebrow={copy.nav.upcoming}
@@ -39,6 +58,6 @@ export default async function UpcomingPage() {
         </div>
       )}
       <p className="mt-4 text-xs text-cosmos-muted">{copy.upcoming.attribution} {copy.upcoming.localDates}</p>
-    </PageShell>
+    </>
   );
 }

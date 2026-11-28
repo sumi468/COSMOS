@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import Link from "next/link";
 import PageShell, { SectionHeading } from "@/components/PageShell";
 import FeaturedNews from "@/components/FeaturedNews";
@@ -6,6 +7,7 @@ import EventCard from "@/components/EventCard";
 import MissionCard from "@/components/MissionCard";
 import UpdatedBadge from "@/components/UpdatedBadge";
 import SpaceHero from "@/components/SpaceHero";
+import LoadingState from "@/components/LoadingState";
 import { SourceErrorNotice, EmptyState } from "@/components/EmptyState";
 import { getAllNews } from "@/lib/news";
 import { getUpcomingEvents } from "@/lib/launches";
@@ -14,67 +16,24 @@ import { getLocalization } from "@/lib/localization";
 
 export const revalidate = 300;
 
-export default async function HomePage() {
+export default function HomePage() {
   const { copy } = getLocalization();
-  const [news, events] = await Promise.all([getAllNews(), getUpcomingEvents()]);
-
-  const featured = news.items.slice(0, 3);
-  const latest = news.items.slice(3, 9);
-  const upcoming = events.items.slice(0, 3);
   const spotlightMissions = MISSIONS.filter((m) => m.status === "Active" || m.status === "Upcoming").slice(0, 4);
 
   return (
     <PageShell>
       <SpaceHero />
-      <section id="dispatches">
-        <SectionHeading
-          eyebrow={copy.home.dispatches}
-          title={copy.home.stories}
-          action={<UpdatedBadge updatedAt={news.updatedAt} stale={news.stale} />}
-        />
-        <SourceErrorNotice errors={news.errors} />
-        {featured.length > 0 ? (
-          <FeaturedNews items={featured} />
-        ) : (
-          <EmptyState
-            title={copy.home.feedsUnavailable}
-            message={copy.home.checkBack}
-          />
-        )}
-      </section>
+
+      <div id="dispatches">
+        <Suspense fallback={<HomeSectionLoading eyebrow={copy.home.dispatches} title={copy.home.stories} />}>
+          <HomeNews />
+        </Suspense>
+      </div>
 
       <section className="mt-12">
-        <SectionHeading eyebrow={copy.nav.latest} title={copy.home.fromAgencies} action={<Link href="/latest" className="text-sm text-cosmos-accent hover:underline">{copy.home.viewAll} &rarr;</Link>} />
-        {latest.length > 0 ? (
-          <div>
-            {latest.map((item) => (
-              <NewsCard key={item.id} item={item} />
-            ))}
-          </div>
-        ) : (
-          <EmptyState title={copy.home.noMoreStories} />
-        )}
-      </section>
-
-      <section className="mt-12">
-        <SectionHeading
-          eyebrow={copy.nav.upcoming}
-          title={copy.home.whatsNext}
-          action={<Link href="/upcoming" className="text-sm text-cosmos-accent hover:underline">{copy.home.fullSchedule} &rarr;</Link>}
-        />
-        {upcoming.length > 0 ? (
-          <div className="grid gap-3">
-            {upcoming.map((event) => (
-              <EventCard key={event.id} event={event} />
-            ))}
-          </div>
-        ) : (
-          <EmptyState
-            title={copy.home.eventsUnavailable}
-            message={copy.home.noLaunchesInWindow}
-          />
-        )}
-        <p className="mt-3 text-xs text-cosmos-muted">{copy.upcoming.attribution}</p>
+        <Suspense fallback={<HomeSectionLoading eyebrow={copy.nav.upcoming} title={copy.home.whatsNext} />}>
+          <HomeSchedule />
+        </Suspense>
       </section>
 
       <section className="mt-12 mb-4">
@@ -90,5 +49,78 @@ export default async function HomePage() {
         </div>
       </section>
     </PageShell>
+  );
+}
+
+function HomeSectionLoading({ eyebrow, title }: { eyebrow: string; title: string }) {
+  return (
+    <>
+      <SectionHeading eyebrow={eyebrow} title={title} />
+      <LoadingState compact />
+    </>
+  );
+}
+
+async function HomeNews() {
+  const { copy } = getLocalization();
+  const news = await getAllNews();
+  const featured = news.items.slice(0, 3);
+  const latest = news.items.slice(3, 9);
+
+  return (
+    <>
+      <section>
+        <SectionHeading
+          eyebrow={copy.home.dispatches}
+          title={copy.home.stories}
+          action={<UpdatedBadge updatedAt={news.updatedAt} stale={news.stale} />}
+        />
+        <SourceErrorNotice errors={news.errors} />
+        {featured.length > 0 ? (
+          <FeaturedNews items={featured} />
+        ) : (
+          <EmptyState title={copy.home.feedsUnavailable} message={copy.home.checkBack} />
+        )}
+      </section>
+
+      <section className="mt-12">
+        <SectionHeading eyebrow={copy.nav.latest} title={copy.home.fromAgencies} action={<Link href="/latest" className="text-sm text-cosmos-accent hover:underline">{copy.home.viewAll} &rarr;</Link>} />
+        {latest.length > 0 ? (
+          <div>
+            {latest.map((item) => (
+              <NewsCard key={item.id} item={item} />
+            ))}
+          </div>
+        ) : (
+          <EmptyState title={copy.home.noMoreStories} />
+        )}
+      </section>
+    </>
+  );
+}
+
+async function HomeSchedule() {
+  const { copy } = getLocalization();
+  const events = await getUpcomingEvents();
+  const upcoming = events.items.slice(0, 3);
+
+  return (
+    <>
+      <SectionHeading
+        eyebrow={copy.nav.upcoming}
+        title={copy.home.whatsNext}
+        action={<Link href="/upcoming" className="text-sm text-cosmos-accent hover:underline">{copy.home.fullSchedule} &rarr;</Link>}
+      />
+      {upcoming.length > 0 ? (
+        <div className="grid gap-3">
+          {upcoming.map((event) => (
+            <EventCard key={event.id} event={event} />
+          ))}
+        </div>
+      ) : (
+        <EmptyState title={copy.home.eventsUnavailable} message={copy.home.noLaunchesInWindow} />
+      )}
+      <p className="mt-3 text-xs text-cosmos-muted">{copy.upcoming.attribution}</p>
+    </>
   );
 }
