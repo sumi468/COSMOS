@@ -38,9 +38,13 @@ async function JapaneseText({ item, field, previewLength, label, fallback }: Pro
   const result = await getJapaneseNewsText(item, field);
   if (!result) return fallback;
 
+  const text = previewLength ? previewText(result.text, previewLength) : result.text;
+
   return (
     <>
-      <span lang={result.language}>{previewLength ? previewText(result.text, previewLength) : result.text}</span>
+      <span lang={result.language} className={result.language === "ja" && text !== fallback ? "article-translation" : undefined}>
+        {text}
+      </span>
       {label && result.translated && <span className="block mt-2 text-xs text-cosmos-muted">{label}</span>}
     </>
   );

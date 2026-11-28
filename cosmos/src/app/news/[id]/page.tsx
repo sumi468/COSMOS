@@ -28,7 +28,7 @@ export default async function NewsDetailPage({ params }: { params: { id: string 
     <PageShell>
       <Link href="/latest" className="text-sm text-cosmos-muted hover:text-cosmos-ink">&larr; {copy.news.back}</Link>
 
-      <article className="mt-7 max-w-3xl">
+      <article className="article-entry mt-7 max-w-3xl">
         <div className="eyebrow text-cosmos-accent">{item.source}</div>
         <h1 className="mt-2.5 editorial-title article-title"><NewsText item={item} field="title" /></h1>
         <div className="mt-3 flex flex-wrap items-center gap-3 text-xs text-cosmos-muted">
