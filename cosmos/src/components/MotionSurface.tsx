@@ -42,7 +42,9 @@ export default function MotionSurface({ children }: { children: ReactNode }) {
       });
     }, { threshold: 0.08 });
 
-    surface.querySelectorAll(":scope > header:not(.space-hero), .section-heading, .motion-card").forEach((element) => observer.observe(element));
+    surface
+      .querySelectorAll(":scope > header:not(.space-hero), .section-heading, .motion-card:not(.news-preview)")
+      .forEach((element) => observer.observe(element));
     if (hero) observer.observe(hero);
     document.addEventListener("visibilitychange", syncAmbient);
     preference.addEventListener("change", syncAmbient);
