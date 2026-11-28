@@ -13,10 +13,10 @@ export default function SpaceImageCard({ image, featured = false }: { image: Spa
         {image.mediaType === "image" ? (
           <Image
             src={image.imageUrl}
-            alt={image.title}
+            alt={image.alt ?? image.title}
             fill
             sizes={featured ? "(min-width: 1024px) 54vw, 100vw" : "(min-width: 1024px) 28vw, (min-width: 640px) 50vw, 100vw"}
-            className="object-cover"
+            className={featured ? "object-contain" : "object-cover"}
             priority={featured}
           />
         ) : (

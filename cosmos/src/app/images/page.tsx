@@ -13,28 +13,30 @@ export function generateMetadata() {
 export default async function ImagesPage({ searchParams }: { searchParams: { q?: string } }) {
   const { copy } = getLocalization();
   const query = searchParams.q?.trim();
-  const [{ image: apod, stale, error }, gallery] = await Promise.all([
+  const [{ image: apod, stale }, gallery] = await Promise.all([
     getApod(),
     searchNasaImages(query || "James Webb Space Telescope", 9)
   ]);
 
   return (
     <PageShell>
-      <SectionHeading as="h1" eyebrow={copy.images.title} title={copy.images.pictureOfDay} />
-      {apod && error && (
-        <p className="text-sm text-cosmos-warning mb-4">
-          {copy.images.apodUnavailable} {stale && copy.images.savedImage}
-        </p>
+      {apod && (
+        <section className="mb-12">
+          <SectionHeading as="h1" eyebrow={copy.images.title} title={copy.images.pictureOfDay} />
+          {stale && (
+            <p className="mb-4 text-sm text-cosmos-warning">{copy.images.savedImage}</p>
+          )}
+          <SpaceImageCard image={apod} featured />
+        </section>
       )}
 
-      {apod ? (
-        <SpaceImageCard image={apod} featured />
-      ) : (
-        <EmptyState title={copy.images.apodUnavailable} message={copy.images.retrySoon} />
-      )}
-
-      <div className="mt-12">
-        <SectionHeading eyebrow={copy.images.gallery} title={copy.images.library} />
+      <section>
+        <SectionHeading
+          as={apod ? "h2" : "h1"}
+          eyebrow={apod ? copy.images.gallery : copy.images.title}
+          title={copy.images.library}
+        />
+        {!apod && <p className="mb-4 text-sm text-cosmos-muted">{copy.images.apodUnavailable}</p>}
         <div className="mb-6">
           <SearchBar action="/images" defaultValue={query} />
         </div>
@@ -47,7 +49,7 @@ export default async function ImagesPage({ searchParams }: { searchParams: { q?:
         ) : (
           <EmptyState title={copy.images.noImages} message={gallery.error ? copy.images.libraryUnavailable : copy.images.searchHint} />
         )}
-      </div>
+      </section>
     </PageShell>
   );
 }

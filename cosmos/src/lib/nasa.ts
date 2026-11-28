@@ -1,5 +1,6 @@
 import { fetchFeed } from "@/lib/rss";
 import { categorize } from "@/lib/categorize";
+import { parseApodPhoto } from "@/lib/apod";
 import { encodeId } from "@/lib/id";
 import { getLastGood, setLastGood } from "@/lib/cache";
 import { fetchCache } from "@/lib/fetchPolicy";
@@ -99,37 +100,23 @@ export async function getNasaNews(): Promise<FetchResult<NewsItem>> {
 }
 
 // --- NASA Astronomy Picture of the Day -------------------------------------
-// https://api.nasa.gov/ — DEMO_KEY works with a low rate limit; set
-// NASA_API_KEY on the server (never NEXT_PUBLIC_*) to raise it. Never
-// embedded in client bundles: this function only ever runs on the server.
-const APOD_CACHE_KEY = "nasa-apod";
+const APOD_FEED = "https://science.nasa.gov/feed/apod-basic/";
+const APOD_CACHE_KEY = "nasa-apod-photo";
 
 export async function getApod(): Promise<{ image: SpaceImage | null; stale: boolean; error?: string }> {
-  const apiKey = process.env.NASA_API_KEY || "DEMO_KEY";
   try {
-    const res = await fetch(`https://api.nasa.gov/planetary/apod?api_key=${apiKey}`, fetchCache(3600));
+    const res = await fetch(APOD_FEED, { ...fetchCache(3600), signal: AbortSignal.timeout(8_000) });
     if (!res.ok) throw new Error(`HTTP ${res.status} ${res.statusText}`);
-    const data = await res.json();
-    const image: SpaceImage = {
-      id: encodeId(data.url ?? data.title ?? "apod"),
-      title: data.title,
-      date: data.date,
-      explanation: data.explanation,
-      // Images are served from apod.nasa.gov, not api.nasa.gov — see next.config.mjs.
-      imageUrl: data.media_type === "image" ? data.url : data.thumbnail_url ?? data.url,
-      hdImageUrl: data.hdurl,
-      credit: data.copyright ? data.copyright.trim() : "NASA",
-      source: "NASA APOD",
-      officialUrl: "https://apod.nasa.gov/apod/astropix.html",
-      mediaType: data.media_type === "video" ? "video" : "image"
-    };
+    const image = parseApodPhoto(await res.text());
+    if (!image) throw new Error("No usable APOD photos in the feed");
+
     setLastGood(APOD_CACHE_KEY, image);
     return { image, stale: false };
   } catch (err) {
     const message = err instanceof Error ? err.message : String(err);
     if (process.env.NODE_ENV !== "production") {
       // eslint-disable-next-line no-console
-      console.log("[COSMOS] APOD fetch failed:", message);
+      console.log("[COSMOS] APOD feed fetch failed:", message);
     }
     const fallback = getLastGood<SpaceImage>(APOD_CACHE_KEY);
     return {

@@ -45,7 +45,7 @@ The home page pairs an editorial serif heading with a locally served Cassini pho
 
 - NASA news: `https://www.nasa.gov/news-release/feed/`, `https://www.nasa.gov/feed/`, Artemis and station feeds.
 - JAXA news: `https://global.jaxa.jp/rss/press.rdf` and `https://www.jaxa.jp/rss/press_j.rdf` for matching Japanese releases. Incomplete descriptions can be enriched from official article pages.
-- NASA APOD: `https://api.nasa.gov/planetary/apod` (`NASA_API_KEY` optional).
+- NASA APOD: `https://science.nasa.gov/feed/apod-basic/` (official RSS feed).
 - NASA Image Library: `https://images-api.nasa.gov/search`.
 - Launch Library 2: `https://ll.thespacedevs.com/2.2.0/launch/upcoming/` (`LAUNCH_LIBRARY_API_KEY` optional).
 - Mission profiles are curated reference information; consult linked official pages for current status.

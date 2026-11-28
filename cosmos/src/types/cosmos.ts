@@ -36,6 +36,7 @@ export interface SpaceImage {
   date: string; // ISO date as published by NASA
   explanation: string;
   imageUrl: string;
+  alt?: string;
   hdImageUrl?: string;
   credit: string;
   source: "NASA APOD" | "NASA Image and Video Library";
