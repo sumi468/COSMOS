@@ -20,17 +20,15 @@ export default async function ImagesPage({ searchParams }: { searchParams: { q?:
 
   return (
     <PageShell>
-      <SectionHeading eyebrow={copy.images.title} title={copy.images.pictureOfDay} />
+      <SectionHeading as="h1" eyebrow={copy.images.title} title={copy.images.pictureOfDay} />
       {apod && error && (
-        <p className="text-sm text-cosmos-amber mb-4">
+        <p className="text-sm text-cosmos-warning mb-4">
           {copy.images.apodUnavailable} {stale && copy.images.savedImage}
         </p>
       )}
 
       {apod ? (
-        <div className="max-w-2xl">
-          <SpaceImageCard image={apod} priority />
-        </div>
+        <SpaceImageCard image={apod} featured />
       ) : (
         <EmptyState title={copy.images.apodUnavailable} message={copy.images.retrySoon} />
       )}

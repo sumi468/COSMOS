@@ -6,21 +6,23 @@ export default function PageShell({ children }: { children: ReactNode }) {
 }
 
 export function SectionHeading({
+  as: Heading = "h2",
   eyebrow,
   title,
   action
 }: {
-  eyebrow: string;
-  title?: string;
+  as?: "h1" | "h2";
+  eyebrow?: string;
+  title: string;
   action?: ReactNode;
 }) {
   return (
-    <div className="section-heading flex items-end justify-between gap-4 mb-5">
+    <header className="section-heading">
       <div>
-        <p className="eyebrow text-cosmos-muted">{eyebrow}</p>
-        {title && <h2 className="font-display text-xl text-white mt-1">{title}</h2>}
+        {eyebrow && <p className="eyebrow text-cosmos-accent">{eyebrow}</p>}
+        <Heading className="editorial-title">{title}</Heading>
       </div>
       {action}
-    </div>
+    </header>
   );
 }

@@ -44,7 +44,7 @@ export default async function HomePage() {
       </section>
 
       <section className="mt-12">
-        <SectionHeading eyebrow={copy.nav.latest} title={copy.home.fromAgencies} action={<Link href="/latest" className="text-sm text-cosmos-ice hover:underline">{copy.home.viewAll} &rarr;</Link>} />
+        <SectionHeading eyebrow={copy.nav.latest} title={copy.home.fromAgencies} action={<Link href="/latest" className="text-sm text-cosmos-accent hover:underline">{copy.home.viewAll} &rarr;</Link>} />
         {latest.length > 0 ? (
           <div>
             {latest.map((item) => (
@@ -60,7 +60,7 @@ export default async function HomePage() {
         <SectionHeading
           eyebrow={copy.nav.upcoming}
           title={copy.home.whatsNext}
-          action={<Link href="/upcoming" className="text-sm text-cosmos-ice hover:underline">{copy.home.fullSchedule} &rarr;</Link>}
+          action={<Link href="/upcoming" className="text-sm text-cosmos-accent hover:underline">{copy.home.fullSchedule} &rarr;</Link>}
         />
         {upcoming.length > 0 ? (
           <div className="grid gap-3">
@@ -74,14 +74,14 @@ export default async function HomePage() {
             message={copy.home.noLaunchesInWindow}
           />
         )}
-        <p className="mt-3 text-xs text-cosmos-muted/60">{copy.upcoming.attribution}</p>
+        <p className="mt-3 text-xs text-cosmos-muted">{copy.upcoming.attribution}</p>
       </section>
 
       <section className="mt-12 mb-4">
         <SectionHeading
           eyebrow={copy.nav.missions}
           title={copy.home.inFocus}
-          action={<Link href="/missions" className="text-sm text-cosmos-ice hover:underline">{copy.home.allMissions} &rarr;</Link>}
+          action={<Link href="/missions" className="text-sm text-cosmos-accent hover:underline">{copy.home.allMissions} &rarr;</Link>}
         />
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {spotlightMissions.map((mission) => (

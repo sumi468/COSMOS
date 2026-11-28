@@ -1,9 +1,10 @@
 import type { Metadata, Viewport } from "next";
 import type { ReactNode } from "react";
-import { Space_Grotesk, Inter, JetBrains_Mono } from "next/font/google";
+import { Space_Grotesk, Inter, JetBrains_Mono, Instrument_Serif } from "next/font/google";
 import LanguageProvider from "@/components/LanguageProvider";
 import Navigation from "@/components/Navigation";
 import { getLocalization } from "@/lib/localization";
+import { getTheme, themeColors } from "@/lib/theme";
 import "./globals.css";
 
 const display = Space_Grotesk({
@@ -22,6 +23,13 @@ const mono = JetBrains_Mono({
   variable: "--font-mono"
 });
 
+const editorial = Instrument_Serif({
+  subsets: ["latin"],
+  weight: "400",
+  style: ["normal", "italic"],
+  variable: "--font-editorial"
+});
+
 export function generateMetadata(): Metadata {
   const { copy } = getLocalization();
   return {
@@ -30,7 +38,7 @@ export function generateMetadata(): Metadata {
     manifest: "/manifest.json",
     appleWebApp: {
       capable: true,
-      statusBarStyle: "black-translucent",
+      statusBarStyle: getTheme() === "light" ? "default" : "black-translucent",
       title: "COSMOS"
     },
     icons: {
@@ -43,23 +51,22 @@ export function generateMetadata(): Metadata {
   };
 }
 
-export const viewport: Viewport = {
-  themeColor: "#05070B",
-  width: "device-width",
-  initialScale: 1
-};
+export function generateViewport(): Viewport {
+  const theme = getTheme();
+  return { themeColor: themeColors[theme], colorScheme: theme, width: "device-width", initialScale: 1 };
+}
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   const { locale, copy } = getLocalization();
+  const theme = getTheme();
 
   return (
-    <html lang={locale} className={`${display.variable} ${body.variable} ${mono.variable}`}>
-      <body className="bg-cosmos-black text-cosmos-white font-body min-h-screen">
+    <html lang={locale} data-theme={theme} className={`${display.variable} ${body.variable} ${mono.variable} ${editorial.variable}`}>
+      <body className="bg-cosmos-bg text-cosmos-ink font-body min-h-screen">
         <LanguageProvider
           locale={locale}
           copy={{
             nav: copy.nav,
-            languageLabel: copy.settings.language,
             retry: copy.common.tryAgain,
             countdown: { inProgress: copy.event.inProgress, units: copy.event.units },
             newsError: { loadFailed: copy.news.loadFailed, retryHint: copy.news.retryHint, back: copy.news.back }

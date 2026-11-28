@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import PageShell from "@/components/PageShell";
+import PageShell, { SectionHeading } from "@/components/PageShell";
 import NewsCard from "@/components/NewsCard";
 import { getMissionBySlug, localizeMission, MISSIONS } from "@/lib/missions";
 import { getAllNews } from "@/lib/news";
@@ -25,27 +25,27 @@ export default async function MissionDetailPage({ params }: { params: { slug: st
 
   return (
     <PageShell>
-      <Link href="/missions" className="text-sm text-cosmos-muted hover:text-white">&larr; {copy.missions.back}</Link>
+      <Link href="/missions" className="text-sm text-cosmos-muted hover:text-cosmos-ink">&larr; {copy.missions.back}</Link>
 
       <div className="mt-6 max-w-2xl">
-        <div className="eyebrow text-cosmos-ice">{copy.agency[mission.organization]}</div>
-        <h1 className="mt-2 font-display text-3xl text-white">{mission.name}</h1>
-        <p className="mt-3 text-[15px] leading-relaxed text-cosmos-white/90">{mission.description}</p>
+        <div className="eyebrow text-cosmos-accent">{copy.agency[mission.organization]}</div>
+        <h1 className="mt-2.5 editorial-title article-title">{mission.name}</h1>
+        <p className="mt-3 text-[15px] leading-relaxed text-cosmos-ink/90">{mission.description}</p>
 
-        <dl className="mt-6 grid grid-cols-2 gap-4 rounded-2xl border border-cosmos-line p-5 text-sm">
+        <dl className="mt-6 grid grid-cols-2 gap-4 rounded-2xl border border-cosmos-line bg-cosmos-surface p-5 sm:p-6 text-sm">
           <div>
             <dt className="eyebrow text-cosmos-muted">{copy.common.status}</dt>
-            <dd className="mt-1 text-white">{copy.missionStatus[mission.status]}</dd>
+            <dd className="mt-1 text-cosmos-ink">{copy.missionStatus[mission.status]}</dd>
           </div>
           {mission.target && (
             <div>
               <dt className="eyebrow text-cosmos-muted">{copy.common.target}</dt>
-              <dd className="mt-1 text-white">{mission.target}</dd>
+              <dd className="mt-1 text-cosmos-ink">{mission.target}</dd>
             </div>
           )}
           <div>
             <dt className="eyebrow text-cosmos-muted">{copy.common.organization}</dt>
-            <dd className="mt-1 text-white">{copy.agency[mission.organization]}</dd>
+            <dd className="mt-1 text-cosmos-ink">{copy.agency[mission.organization]}</dd>
           </div>
         </dl>
 
@@ -57,7 +57,7 @@ export default async function MissionDetailPage({ params }: { params: { slug: st
           href={mission.officialUrl}
           target="_blank"
           rel="noopener noreferrer"
-          className="mt-5 inline-flex items-center gap-1.5 rounded-lg bg-cosmos-ice text-cosmos-black text-sm font-medium px-4 py-2 hover:opacity-90 transition-opacity"
+          className="mt-5 primary-button"
         >
           {copy.missions.officialSite} &rarr;
         </a>
@@ -65,7 +65,7 @@ export default async function MissionDetailPage({ params }: { params: { slug: st
 
       {relatedNews.length > 0 && (
         <div className="mt-12 max-w-2xl">
-          <p className="eyebrow text-cosmos-muted mb-2">{copy.missions.relatedNews}</p>
+          <SectionHeading title={copy.missions.relatedNews} />
           {relatedNews.map((item) => (
             <NewsCard key={item.id} item={item} />
           ))}

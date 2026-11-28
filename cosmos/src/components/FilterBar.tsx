@@ -16,10 +16,11 @@ function Chip({ href, active, children }: { href: string; active: boolean; child
   return (
     <Link
       href={href}
-      className={`motion-control shrink-0 rounded-full border px-3.5 py-1.5 text-sm transition-colors ${
+      aria-current={active ? "true" : undefined}
+      className={`motion-control inline-flex min-h-9 shrink-0 items-center rounded-full border px-3.5 text-sm ${
         active
-          ? "border-cosmos-ice/40 bg-cosmos-ice/10 text-cosmos-ice"
-          : "border-cosmos-line text-cosmos-muted hover:text-white hover:border-white/20"
+          ? "border-cosmos-accent/40 bg-cosmos-accent/10 text-cosmos-accent"
+          : "border-cosmos-line bg-cosmos-surface text-cosmos-muted hover:text-cosmos-ink hover:border-cosmos-accent/35"
       }`}
     >
       {children}

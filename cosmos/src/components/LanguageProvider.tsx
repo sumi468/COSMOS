@@ -10,7 +10,6 @@ interface Language {
   locale: Locale;
   copy: {
     nav: Messages["nav"];
-    languageLabel: string;
     retry: string;
     countdown: Pick<Messages["event"], "inProgress" | "units">;
     newsError: Pick<Messages["news"], "loadFailed" | "retryHint" | "back">;

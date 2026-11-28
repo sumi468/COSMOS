@@ -17,6 +17,7 @@ export default async function UpcomingPage() {
   return (
     <PageShell>
       <SectionHeading
+        as="h1"
         eyebrow={copy.nav.upcoming}
         title={copy.upcoming.title}
         action={<UpdatedBadge updatedAt={events.updatedAt} stale={events.stale} />}
@@ -37,7 +38,7 @@ export default async function UpcomingPage() {
           />
         </div>
       )}
-      <p className="mt-4 text-xs text-cosmos-muted/60">{copy.upcoming.attribution} {copy.upcoming.localDates}</p>
+      <p className="mt-4 text-xs text-cosmos-muted">{copy.upcoming.attribution} {copy.upcoming.localDates}</p>
     </PageShell>
   );
 }

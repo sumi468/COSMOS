@@ -26,7 +26,7 @@ export default function Navigation() {
     <>
       {/* Desktop sidebar */}
       <aside className="space-sidebar hidden md:flex md:flex-col md:w-48 lg:w-52 md:shrink-0 md:border-r md:border-cosmos-line md:sticky md:top-0 md:overflow-y-auto md:py-7 md:px-4">
-        <Link href="/" className="space-brand flex items-center gap-2.5 px-2 mb-8">
+        <Link href="/" className="space-brand flex items-center gap-2.5 px-2 mb-7">
           <span className="cosmos-mark" aria-hidden="true">✦</span>
           <span className="font-display text-sm font-semibold tracking-[0.24em]">COSMOS</span>
         </Link>
@@ -38,13 +38,13 @@ export default function Navigation() {
                 key={href}
                 href={href}
                 aria-current={active ? "page" : undefined}
-                className={`nav-link flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm transition-colors ${
+                className={`nav-link flex items-center gap-3 min-h-11 rounded-lg px-3 py-2.5 text-sm ${
                   active
-                    ? "nav-active text-white"
-                    : "text-cosmos-muted hover:text-white hover:bg-white/[0.03]"
+                    ? "nav-active text-cosmos-ink"
+                    : "text-cosmos-muted hover:text-cosmos-ink hover:bg-cosmos-inset"
                 }`}
               >
-                <Icon active={active} />
+                <Icon />
                 {copy.nav[label]}
               </Link>
             );
@@ -62,7 +62,7 @@ export default function Navigation() {
       {/* Mobile bottom tab bar */}
       <nav
         aria-label={copy.nav.label}
-        className="space-mobile-nav md:hidden fixed bottom-0 inset-x-0 z-40 border-t border-cosmos-line bg-cosmos-black/95 backdrop-blur supports-[backdrop-filter]:bg-cosmos-black/80"
+        className="space-mobile-nav md:hidden fixed bottom-0 inset-x-0 z-40 border-t border-cosmos-line backdrop-blur"
         style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
       >
         <div className="grid grid-cols-6">
@@ -73,12 +73,13 @@ export default function Navigation() {
                 key={href}
                 href={href}
                 aria-current={active ? "page" : undefined}
-                className={`nav-link flex flex-col items-center justify-start gap-1 py-2.5 text-center text-[10px] ${
-                  active ? "text-cosmos-ice" : "text-cosmos-muted"
+                aria-label={copy.nav[label]}
+                className={`nav-link flex flex-col items-center justify-start gap-1 px-0.5 py-2.5 text-center text-[clamp(0.57rem,2.8vw,0.625rem)] leading-tight whitespace-nowrap ${
+                  active ? "text-cosmos-accent" : "text-cosmos-muted"
                 }`}
               >
-                <Icon active={active} />
-                {copy.nav[label]}
+                <Icon />
+                {label === "latest" ? copy.nav.latestShort : copy.nav[label]}
               </Link>
             );
           })}
@@ -88,28 +89,25 @@ export default function Navigation() {
   );
 }
 
-type IconProps = { active?: boolean };
-const strokeFor = (active?: boolean) => (active ? "#EBC797" : "currentColor");
-
-function HomeIcon({ active }: IconProps) {
+function HomeIcon() {
   return (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={strokeFor(active)} strokeWidth="1.6">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true" strokeWidth="1.6">
       <path d="M4 11.5 12 4l8 7.5" strokeLinecap="round" strokeLinejoin="round" />
       <path d="M6 10v9h12v-9" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   );
 }
-function LatestIcon({ active }: IconProps) {
+function LatestIcon() {
   return (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={strokeFor(active)} strokeWidth="1.6">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true" strokeWidth="1.6">
       <rect x="4" y="4" width="16" height="16" rx="2" />
       <path d="M8 9h8M8 13h8M8 17h4" strokeLinecap="round" />
     </svg>
   );
 }
-function MissionsIcon({ active }: IconProps) {
+function MissionsIcon() {
   return (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={strokeFor(active)} strokeWidth="1.6">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true" strokeWidth="1.6">
       <path
         d="M12 3c2.5 2.7 4 6 4 9.5 0 1.7-.4 3.3-1 4.5l-3-1-3 1c-.6-1.2-1-2.8-1-4.5C8 9 9.5 5.7 12 3Z"
         strokeLinejoin="round"
@@ -118,26 +116,26 @@ function MissionsIcon({ active }: IconProps) {
     </svg>
   );
 }
-function UpcomingIcon({ active }: IconProps) {
+function UpcomingIcon() {
   return (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={strokeFor(active)} strokeWidth="1.6">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true" strokeWidth="1.6">
       <circle cx="12" cy="12" r="8" />
       <path d="M12 8v4l3 2" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   );
 }
-function ImagesIcon({ active }: IconProps) {
+function ImagesIcon() {
   return (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={strokeFor(active)} strokeWidth="1.6">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true" strokeWidth="1.6">
       <rect x="3.5" y="5" width="17" height="14" rx="2" />
       <circle cx="9" cy="10.5" r="1.5" />
       <path d="M4 17l5-5 4 4 3-3 4 4" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   );
 }
-function SettingsIcon({ active }: IconProps) {
+function SettingsIcon() {
   return (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={strokeFor(active)} strokeWidth="1.6">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true" strokeWidth="1.6">
       <circle cx="12" cy="12" r="3" />
       <path d="M19 12a7 7 0 0 0-.1-1.2l2-1.5-2-3.4-2.3.9a7 7 0 0 0-2-1.2L14.2 3H9.8l-.4 2.6a7 7 0 0 0-2 1.2l-2.3-.9-2 3.4 2 1.5A7 7 0 0 0 5 12c0 .4 0 .8.1 1.2l-2 1.5 2 3.4 2.3-.9c.6.5 1.3.9 2 1.2l.4 2.6h4.4l.4-2.6a7 7 0 0 0 2-1.2l2.3.9 2-3.4-2-1.5c.1-.4.1-.8.1-1.2Z" strokeLinejoin="round" />
     </svg>

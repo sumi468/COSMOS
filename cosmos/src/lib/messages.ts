@@ -4,6 +4,7 @@ const en = {
   nav: {
     home: "Home",
     latest: "Latest",
+    latestShort: "Latest",
     missions: "Missions",
     upcoming: "Upcoming",
     images: "Images",
@@ -131,6 +132,8 @@ const en = {
   },
   settings: {
     language: "Display language",
+    theme: "Display theme",
+    themes: { dark: "Dark", light: "Light" },
     about: "About COSMOS",
     description: "COSMOS aggregates real-time public information directly from NASA and JAXA’s official feeds and APIs. News headlines and excerpts are translated for Japanese display. Each article includes a link to the original source. On article pages, you can generate an AI brief in your display language from the available source text. AI briefs are labeled and may contain mistakes.",
     sources: "Data sources",
@@ -206,6 +209,7 @@ const ja: typeof en = {
   nav: {
     home: "ホーム",
     latest: "最新ニュース",
+    latestShort: "ニュース",
     missions: "ミッション",
     upcoming: "予定",
     images: "画像",
@@ -333,6 +337,8 @@ const ja: typeof en = {
   },
   settings: {
     language: "表示言語",
+    theme: "表示テーマ",
+    themes: { dark: "ダーク", light: "ライト" },
     about: "COSMOSについて",
     description: "COSMOSは、NASAとJAXAの公式フィードやAPIから最新の公開情報を集めています。日本語表示では、記事の見出しと抜粋を日本語で読めます。記事ページでは、公式情報をもとに選択した言語でAI要約を生成できます。要約にはAIで生成したことを表示します。内容に誤りが含まれる場合は、各記事の公式リンクから確認できます。",
     sources: "情報源",

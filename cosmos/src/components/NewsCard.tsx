@@ -12,15 +12,15 @@ export default function NewsCard({ item }: { item: NewsItem }) {
   return (
     <Link
       href={`/news/${item.id}`}
-      className="motion-card news-row group flex gap-4 py-5 border-b border-cosmos-line last:border-b-0"
+      className="motion-card news-row group flex gap-3 py-5 sm:gap-5 border-b border-cosmos-line last:border-b-0"
     >
-      <div className="relative hidden sm:block w-28 h-20 shrink-0 rounded-lg overflow-hidden bg-cosmos-panel2">
+      <div className="relative order-last mt-0.5 h-16 w-16 sm:order-first sm:h-20 sm:w-28 shrink-0 rounded-lg overflow-hidden bg-cosmos-inset">
         {item.imageUrl ? (
           <Image
             src={item.imageUrl}
             alt=""
             fill
-            sizes="112px"
+            sizes="(min-width: 640px) 112px, 64px"
             className="object-cover transition-transform duration-300 group-hover:scale-105"
           />
         ) : (
@@ -28,16 +28,16 @@ export default function NewsCard({ item }: { item: NewsItem }) {
         )}
       </div>
       <div className="min-w-0 flex-1">
-        <div className="flex items-center gap-2 eyebrow text-cosmos-ice/80">
+        <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5 eyebrow text-cosmos-accent">
           <span>{item.source}</span>
-          <span className="text-cosmos-muted/60">&middot;</span>
+          <span className="text-cosmos-muted">&middot;</span>
           <span className="text-cosmos-muted">{copy.category[item.category]}</span>
         </div>
-        <h3 className="mt-1.5 font-display text-[15px] leading-snug text-white group-hover:text-cosmos-ice transition-colors line-clamp-2">
+        <h3 className="mt-1.5 font-display text-base font-medium leading-snug sm:text-lg text-cosmos-ink group-hover:text-cosmos-accent transition-colors line-clamp-2">
           <NewsText item={item} field="title" />
         </h3>
-        <p className="mt-1 text-sm text-cosmos-muted"><NewsText item={item} field="summary" previewLength={160} /></p>
-        <p className="mt-1.5 text-xs text-cosmos-muted/70">{relativeTime(item.publishedAt, locale)}</p>
+        <p className="mt-1.5 line-clamp-3 text-sm leading-relaxed text-cosmos-muted"><NewsText item={item} field="summary" previewLength={160} /></p>
+        <p className="mt-2 text-xs text-cosmos-muted">{relativeTime(item.publishedAt, locale)}</p>
       </div>
     </Link>
   );

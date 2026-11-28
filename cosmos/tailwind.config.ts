@@ -6,16 +6,15 @@ const config: Config = {
     extend: {
       colors: {
         cosmos: {
-          black: "#05070B",
-          navy: "#0A1120",
-          panel: "#0F1B2E",
-          panel2: "#10192C",
-          line: "rgba(255,255,255,0.08)",
-          white: "#F4F7FA",
-          muted: "#8B96AA",
-          ice: "#AEE3F5",
-          cyan: "#49D4E8",
-          amber: "#F2B15C"
+          bg: "rgb(var(--cosmos-bg) / <alpha-value>)",
+          surface: "rgb(var(--cosmos-surface) / <alpha-value>)",
+          inset: "rgb(var(--cosmos-inset) / <alpha-value>)",
+          line: "rgb(var(--cosmos-line) / <alpha-value>)",
+          ink: "rgb(var(--cosmos-ink) / <alpha-value>)",
+          muted: "rgb(var(--cosmos-muted) / <alpha-value>)",
+          accent: "rgb(var(--cosmos-accent) / <alpha-value>)",
+          teal: "rgb(var(--cosmos-teal) / <alpha-value>)",
+          warning: "rgb(var(--cosmos-warning) / <alpha-value>)"
         }
       },
       fontFamily: {

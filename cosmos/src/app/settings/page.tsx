@@ -1,10 +1,15 @@
 import PageShell, { SectionHeading } from "@/components/PageShell";
-import LanguageSelector from "@/components/LanguageSelector";
+import PreferenceSelector from "@/components/PreferenceSelector";
+import { LANGUAGES } from "@/lib/language";
 import { getLocalization } from "@/lib/localization";
+import { getTheme, THEMES } from "@/lib/theme";
+import { setLanguage, setTheme } from "./actions";
 
 export function generateMetadata() {
   return { title: getLocalization().copy.nav.settings };
 }
+
+const LANGUAGE_NAMES = { en: "English", ja: "日本語" };
 
 const SOURCES = [
   { key: "nasaReleases", url: "https://www.nasa.gov/news-release/feed/" },
@@ -18,35 +23,47 @@ const SOURCES = [
 ] as const;
 
 export default function SettingsPage() {
-  const { copy } = getLocalization();
+  const { locale, copy } = getLocalization();
 
   return (
     <PageShell>
-      <SectionHeading eyebrow={copy.nav.settings} />
-      <LanguageSelector />
-      <h2 className="font-display text-xl text-white mb-3">{copy.settings.about}</h2>
-      <p className="text-sm text-cosmos-white/90 max-w-lg leading-relaxed">
-        {copy.settings.description}
-      </p>
-
-      <div className="mt-8 max-w-lg">
-        <p className="eyebrow text-cosmos-muted mb-3">{copy.settings.sources}</p>
-        <ul className="divide-y divide-cosmos-line rounded-2xl border border-cosmos-line overflow-hidden">
-          {SOURCES.map((s) => (
-            <li key={s.url} className="flex items-center justify-between gap-3 px-4 py-3 text-sm">
-              <span className="text-white">{copy.sources[s.key]}</span>
-              <a href={s.url} target="_blank" rel="noopener noreferrer" className="text-cosmos-ice text-xs shrink-0 hover:underline">
-                {copy.settings.visit} &rarr;
-              </a>
-            </li>
-          ))}
-        </ul>
+      <SectionHeading as="h1" title={copy.nav.settings} />
+      <div className="settings-preferences">
+        <PreferenceSelector
+          name="theme"
+          label={copy.settings.theme}
+          selected={getTheme()}
+          choices={THEMES.map((theme) => ({ value: theme, label: copy.settings.themes[theme], preview: theme }))}
+          action={setTheme}
+        />
+        <PreferenceSelector
+          name="language"
+          label={copy.settings.language}
+          selected={locale}
+          choices={LANGUAGES.map((language) => ({ value: language, label: LANGUAGE_NAMES[language], lang: language }))}
+          action={setLanguage}
+        />
       </div>
 
-      <div className="mt-8 max-w-lg text-xs text-cosmos-muted leading-relaxed">
-        <p>
-          {copy.settings.independence}
-        </p>
+      <div className="settings-details">
+        <section>
+          <h2 className="editorial-title settings-title">{copy.settings.about}</h2>
+          <p className="mt-3 text-sm leading-relaxed text-cosmos-muted">{copy.settings.description}</p>
+          <p className="mt-4 text-xs leading-relaxed text-cosmos-muted">{copy.settings.independence}</p>
+        </section>
+        <section>
+          <h2 className="editorial-title settings-title">{copy.settings.sources}</h2>
+          <ul className="mt-3 divide-y divide-cosmos-line border-y border-cosmos-line">
+            {SOURCES.map(({ key, url }) => (
+              <li key={key} className="flex items-center justify-between gap-3 py-3 text-sm">
+                <span>{copy.sources[key]}</span>
+                <a href={url} target="_blank" rel="noopener noreferrer" className="shrink-0 text-xs text-cosmos-accent hover:underline">
+                  {copy.settings.visit} &rarr;
+                </a>
+              </li>
+            ))}
+          </ul>
+        </section>
       </div>
     </PageShell>
   );

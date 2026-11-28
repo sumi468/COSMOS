@@ -26,22 +26,22 @@ export default async function NewsDetailPage({ params }: { params: { id: string 
 
   return (
     <PageShell>
-      <Link href="/latest" className="text-sm text-cosmos-muted hover:text-white">&larr; {copy.news.back}</Link>
+      <Link href="/latest" className="text-sm text-cosmos-muted hover:text-cosmos-ink">&larr; {copy.news.back}</Link>
 
-      <article className="mt-6 max-w-2xl">
-        <div className="eyebrow text-cosmos-ice">{item.source}</div>
-        <h1 className="mt-2 font-display text-2xl md:text-3xl leading-tight text-white"><NewsText item={item} field="title" /></h1>
+      <article className="mt-7 max-w-3xl">
+        <div className="eyebrow text-cosmos-accent">{item.source}</div>
+        <h1 className="mt-2.5 editorial-title article-title"><NewsText item={item} field="title" /></h1>
         <div className="mt-3 flex flex-wrap items-center gap-3 text-xs text-cosmos-muted">
           <span>{formatLocalDateTime(item.publishedAt, locale)}</span>
-          <span className="text-cosmos-muted/40">&middot;</span>
+          <span className="text-cosmos-muted">&middot;</span>
           <span>{relativeTime(item.publishedAt, locale)}</span>
-          <span className="text-cosmos-muted/40">&middot;</span>
+          <span className="text-cosmos-muted">&middot;</span>
           <span className="rounded-full border border-cosmos-line px-2 py-0.5">{copy.category[item.category]}</span>
         </div>
 
         <div className="relative mt-6 aspect-video rounded-2xl overflow-hidden border border-cosmos-line">
           {item.imageUrl ? (
-            <Image src={item.imageUrl} alt="" fill sizes="700px" className="object-cover" />
+            <Image src={item.imageUrl} alt="" fill sizes="(min-width: 1024px) 768px, 100vw" className="object-cover" />
           ) : (
             <ArticlePlaceholder source={item.source} />
           )}
@@ -49,12 +49,12 @@ export default async function NewsDetailPage({ params }: { params: { id: string 
 
         <div className="mt-6 border-t border-cosmos-line pt-6">
           <p className="eyebrow text-cosmos-muted mb-2">{copy.news.excerpt}</p>
-          <p className="text-[15px] leading-relaxed text-cosmos-white/90 whitespace-pre-line">
+          <p className="text-[15px] leading-relaxed text-cosmos-ink/90 whitespace-pre-line">
             <NewsText item={item} field="summary" showTranslationLabel />
           </p>
           {showOriginal && (
-            <details className="mt-4 text-sm text-cosmos-muted">
-              <summary className="cursor-pointer hover:text-white">{copy.news.showOriginal}</summary>
+            <details className="mt-4 rounded-xl border border-cosmos-line bg-cosmos-surface p-4 text-sm text-cosmos-muted">
+              <summary className="cursor-pointer font-medium text-cosmos-accent">{copy.news.showOriginal}</summary>
               <p className="mt-2 font-medium" lang={isJapaneseText(item.title) ? "ja" : "en"}>{item.title}</p>
               {item.summary && (
                 <p className="mt-2 whitespace-pre-line" lang={isJapaneseText(item.summary) ? "ja" : "en"}>{item.summary}</p>
@@ -65,7 +65,7 @@ export default async function NewsDetailPage({ params }: { params: { id: string 
 
         <AiSummary key={`${item.id}-${locale}`} id={item.id} />
 
-        <div className="mt-8 rounded-2xl border border-cosmos-line p-5">
+        <div className="mt-8 rounded-2xl border border-cosmos-line bg-cosmos-surface p-5 sm:p-6">
           <p className="eyebrow text-cosmos-muted mb-1">{copy.common.officialSource}</p>
           <p className="text-sm text-cosmos-muted mb-3">
             {copy.news.publishedVia(item.feedName, item.source)}
@@ -76,7 +76,7 @@ export default async function NewsDetailPage({ params }: { params: { id: string 
                 href={fullJapaneseUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-1.5 rounded-lg bg-cosmos-ice text-cosmos-black text-sm font-medium px-4 py-2 hover:opacity-90 transition-opacity"
+                className="primary-button"
               >
                 {japaneseRelease ? copy.news.readJapanese : copy.news.readGoogleTranslation} &rarr;
               </a>
@@ -86,8 +86,8 @@ export default async function NewsDetailPage({ params }: { params: { id: string 
               target="_blank"
               rel="noopener noreferrer"
               className={fullJapaneseUrl
-                ? "text-sm text-cosmos-ice hover:underline"
-                : "inline-flex items-center gap-1.5 rounded-lg bg-cosmos-ice text-cosmos-black text-sm font-medium px-4 py-2 hover:opacity-90 transition-opacity"}
+                ? "text-sm text-cosmos-accent hover:underline"
+                : "primary-button"}
             >
               {copy.news.readArticle} &rarr;
             </a>
