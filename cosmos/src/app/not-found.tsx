@@ -7,8 +7,8 @@ export default function NotFound() {
 
   return (
     <PageShell>
-      <h1 className="font-display text-2xl text-white">{copy.notFound.title}</h1>
-      <Link href="/" className="mt-4 inline-block text-sm text-cosmos-ice hover:underline">
+      <h1 className="editorial-title article-title">{copy.notFound.title}</h1>
+      <Link href="/" className="mt-4 inline-block text-sm text-cosmos-accent hover:underline">
         &larr; {copy.notFound.home}
       </Link>
     </PageShell>

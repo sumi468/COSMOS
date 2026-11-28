@@ -23,7 +23,7 @@ export default async function SearchPage({ searchParams }: { searchParams: { q?:
 
   return (
     <PageShell>
-      <SectionHeading eyebrow={copy.common.search} title={copy.search.title} />
+      <SectionHeading as="h1" title={copy.search.title} />
       <div className="mt-4 mb-8">
         <SearchBar action="/search" defaultValue={query} />
       </div>
@@ -34,7 +34,7 @@ export default async function SearchPage({ searchParams }: { searchParams: { q?:
 
       {query && missionResults.length > 0 && (
         <section className="mb-10">
-          <SectionHeading eyebrow={copy.nav.missions} />
+          <SectionHeading title={copy.nav.missions} />
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {missionResults.map((m) => (
               <MissionCard key={m.slug} mission={m} />
@@ -45,7 +45,7 @@ export default async function SearchPage({ searchParams }: { searchParams: { q?:
 
       {query && (
         <section>
-          <SectionHeading eyebrow={copy.search.news} />
+          <SectionHeading title={copy.search.news} />
           {newsResults.length > 0 ? (
             <div>
               {newsResults.map((item) => (

@@ -18,7 +18,7 @@ export default function FeaturedNews({ items }: { items: NewsItem[] }) {
           there's no image, instead of needing a placeholder. */}
       <Link href={`/news/${lead.id}`} className="motion-card group block lg:col-span-2">
         {lead.imageUrl && (
-          <div className="relative aspect-[16/10] rounded-xl overflow-hidden bg-cosmos-panel2">
+          <div className="relative aspect-[16/10] rounded-xl overflow-hidden bg-cosmos-inset">
             <Image
               src={lead.imageUrl}
               alt=""
@@ -30,14 +30,14 @@ export default function FeaturedNews({ items }: { items: NewsItem[] }) {
           </div>
         )}
         <div className={lead.imageUrl ? "mt-5" : ""}>
-          <div className="eyebrow text-cosmos-ice">
+          <div className="eyebrow text-cosmos-accent">
             {lead.source} &middot; {copy.category[lead.category]}
           </div>
-          <h2 className="mt-2.5 font-display text-2xl md:text-3xl leading-[1.15] text-white group-hover:text-cosmos-ice transition-colors">
+          <h2 className="mt-2.5 editorial-title lead-title group-hover:text-cosmos-accent transition-colors">
             <NewsText item={lead} field="title" />
           </h2>
-          <p className="mt-3 text-[15px] text-cosmos-muted max-w-xl"><NewsText item={lead} field="summary" previewLength={170} /></p>
-          <p className="mt-3 text-xs text-cosmos-muted/70">{relativeTime(lead.publishedAt, locale)}</p>
+          <p className="mt-3 text-[15px] leading-relaxed text-cosmos-muted max-w-xl"><NewsText item={lead} field="summary" previewLength={170} /></p>
+          <p className="mt-3 text-xs text-cosmos-muted">{relativeTime(lead.publishedAt, locale)}</p>
         </div>
       </Link>
 
@@ -52,16 +52,16 @@ export default function FeaturedNews({ items }: { items: NewsItem[] }) {
               className="motion-card news-row group flex gap-3.5 py-5 first:pt-0 lg:py-0"
             >
               {item.imageUrl && (
-                <div className="relative w-16 h-16 shrink-0 rounded-lg overflow-hidden bg-cosmos-panel2">
+                <div className="relative w-16 h-16 shrink-0 rounded-lg overflow-hidden bg-cosmos-inset">
                   <Image src={item.imageUrl} alt="" fill sizes="64px" className="object-cover" />
                 </div>
               )}
               <div className="min-w-0 flex-1">
-                <div className="eyebrow text-cosmos-ice/80">{item.source}</div>
-                <h3 className="mt-1 font-display text-[15px] leading-snug text-white group-hover:text-cosmos-ice transition-colors line-clamp-2">
+                <div className="eyebrow text-cosmos-accent">{item.source}</div>
+                <h3 className="mt-1 font-display text-[15px] leading-snug text-cosmos-ink group-hover:text-cosmos-accent transition-colors line-clamp-2">
                   <NewsText item={item} field="title" />
                 </h3>
-                <p className="mt-1.5 text-xs text-cosmos-muted/70">{relativeTime(item.publishedAt, locale)}</p>
+                <p className="mt-1.5 text-xs text-cosmos-muted">{relativeTime(item.publishedAt, locale)}</p>
               </div>
             </Link>
           ))}

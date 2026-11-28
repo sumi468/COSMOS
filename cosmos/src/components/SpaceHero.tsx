@@ -1,14 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { Instrument_Serif } from "next/font/google";
 import { getLocalization } from "@/lib/localization";
-
-const editorial = Instrument_Serif({
-  subsets: ["latin"],
-  weight: "400",
-  style: ["normal", "italic"],
-  variable: "--font-editorial"
-});
 
 const SATURN_SOURCE = "https://science.nasa.gov/photojournal/so-far-from-home/";
 
@@ -22,7 +14,7 @@ export default function SpaceHero() {
   const { copy: { hero } } = getLocalization();
 
   return (
-    <header className={`space-hero mb-10 ${editorial.variable}`}>
+    <header className="space-hero mb-10">
       <div className="hero-stage">
         <div className="hero-picture">
           <Image

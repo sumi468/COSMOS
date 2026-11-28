@@ -12,8 +12,8 @@ export default function MissionsPage() {
 
   return (
     <PageShell>
-      <SectionHeading eyebrow={copy.nav.missions} title={copy.missions.title} />
-      <p className="text-sm text-cosmos-muted max-w-lg mb-8">
+      <SectionHeading as="h1" eyebrow={copy.nav.missions} title={copy.missions.title} />
+      <p className="mb-8 max-w-xl text-[15px] leading-relaxed text-cosmos-muted">
         {copy.missions.description}
       </p>
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">

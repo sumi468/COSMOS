@@ -30,7 +30,7 @@ export default async function LatestPage({
 
   return (
     <PageShell>
-      <SectionHeading eyebrow={copy.nav.latest} title={copy.latest.title} action={<UpdatedBadge updatedAt={news.updatedAt} stale={news.stale} />} />
+      <SectionHeading as="h1" eyebrow={copy.nav.latest} title={copy.latest.title} action={<UpdatedBadge updatedAt={news.updatedAt} stale={news.stale} />} />
       <SourceErrorNotice errors={news.errors} />
 
       <div className="mt-4 mb-6 space-y-4">
