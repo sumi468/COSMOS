@@ -19,7 +19,7 @@ export default function ImagesPage({ searchParams }: { searchParams: { q?: strin
   return (
     <PageShell>
       <SectionHeading as="h1" title={copy.images.title} />
-      <div className="space-y-9">
+      <div className="grid gap-9">
         <Suspense fallback={<LoadingState compact />}>
           <AstronomyPhoto />
         </Suspense>
