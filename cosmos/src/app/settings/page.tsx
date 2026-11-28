@@ -17,7 +17,7 @@ const SOURCES = [
   { key: "nasaArtemis", url: "https://www.nasa.gov/missions/artemis/feed/" },
   { key: "nasaStation", url: "https://www.nasa.gov/missions/station/feed/" },
   { key: "jaxaReleases", url: "https://global.jaxa.jp/rss/press.rdf" },
-  { key: "apod", url: "https://api.nasa.gov/" },
+  { key: "apod", url: "https://science.nasa.gov/feed/apod-basic/" },
   { key: "nasaImages", url: "https://images-api.nasa.gov/" },
   { key: "launchLibrary", url: "https://thespacedevs.com/llapi" }
 ] as const;

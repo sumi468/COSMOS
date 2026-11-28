@@ -111,10 +111,9 @@ const en = {
   },
   images: {
     title: "Space Images",
-    pictureOfDay: "Picture of the Day",
-    apodUnavailable: "Couldn’t load NASA’s Picture of the Day.",
+    pictureOfDay: "Latest Astronomy Picture",
+    apodUnavailable: "Couldn’t load NASA’s latest astronomy picture.",
     savedImage: "Showing the last saved image.",
-    retrySoon: "Try again shortly.",
     gallery: "Gallery",
     library: "NASA Image and Video Library",
     libraryUnavailable: "Couldn’t load the NASA image library.",
@@ -146,7 +145,7 @@ const en = {
     nasaArtemis: "NASA Artemis (RSS)",
     nasaStation: "NASA Space Station (RSS)",
     jaxaReleases: "JAXA Press Release, English (RSS)",
-    apod: "NASA Astronomy Picture of the Day (API)",
+    apod: "NASA Astronomy Picture of the Day (RSS)",
     nasaImages: "NASA Image and Video Library (API)",
     launchLibrary: "Launch Library 2 by The Space Devs (API)"
   },
@@ -316,10 +315,9 @@ const ja: typeof en = {
   },
   images: {
     title: "宇宙の画像",
-    pictureOfDay: "今日の天体写真",
-    apodUnavailable: "NASAの今日の天体写真を取得できませんでした。",
+    pictureOfDay: "最新の天体写真",
+    apodUnavailable: "NASAの最新の天体写真を取得できませんでした。",
     savedImage: "前回保存した画像を表示しています。",
-    retrySoon: "しばらくしてからもう一度お試しください。",
     gallery: "ギャラリー",
     library: "NASA画像・動画ライブラリ",
     libraryUnavailable: "NASA画像ライブラリを取得できませんでした。",
@@ -351,7 +349,7 @@ const ja: typeof en = {
     nasaArtemis: "NASAアルテミス計画（RSS）",
     nasaStation: "NASA宇宙ステーション（RSS）",
     jaxaReleases: "JAXAプレスリリース・英語版（RSS）",
-    apod: "NASA今日の天体写真（API）",
+    apod: "NASA今日の天体写真（RSS）",
     nasaImages: "NASA画像・動画ライブラリ（API）",
     launchLibrary: "The Space DevsのLaunch Library 2（API）"
   },
